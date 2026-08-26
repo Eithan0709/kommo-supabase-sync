@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso al Sistema</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --brand-teal: #00A896;
+      --brand-teal-dark: #028090;
+      --brand-green: #02C39A;
+      --brand-neon: #00FFCC;
+      --bg-light: #F8FAFC;
+      --panel-dark: #0B1120;
+      --text-main: #FFFFFF;
+      --text-muted: #94A3B8;
+      --input-bg: rgba(15, 23, 42, 0.8);
+      --border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+
+    /* DEGRADADO CONTINUO EN EL FONDO */
+    .split-container {
+      display: flex;
+      width: 100vw;
+      min-height: 100vh;
+      background: linear-gradient(90deg, 
+        #00875A 0%, 
+        #00A896 40%, 
+        #82D8CA 65%, 
+        #F8FAFC 85%, 
+        #F8FAFC 100%
+      );
+      position: relative;
+    }
+
+    .brand-side {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand-side::before {
+      content: '';
+      position: absolute;
+      width: 550px;
+      height: 550px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+      top: 15%;
+      left: 5%;
+      border-radius: 50%;
+      filter: blur(60px);
+      pointer-events: none;
+    }
+
+    .brand-content {
+      position: relative;
+      z-index: 2;
+      max-width: 520px;
+    }
+
+    .brand-content h1 {
+      font-family: 'Outfit', sans-serif;
+      color: #FFFFFF;
+      font-size: 46px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .brand-content h1 span {
+      background: linear-gradient(135deg, #FFFFFF 0%, #E0F2FE 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .form-side {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* TARJETA CONTENEDORA CON BORDE LUMINOSO */
+    .card-wrapper {
+      width: 100%;
+      max-width: 420px;
+      min-height: 520px;
+      position: relative;
+      border-radius: 28px;
+      padding: 40px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-shadow: 0 0 35px rgba(2, 195, 154, 0.25), 0 25px 60px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+      background: var(--panel-dark);
+    }
+
+    /* BORDE DE LUZ ANIMADO (BORDER BEAM) */
+    .card-wrapper::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(
+        transparent 0deg, 
+        transparent 200deg, 
+        var(--brand-teal) 260deg,
+        var(--brand-green) 310deg,
+        var(--brand-neon) 360deg
+      );
+      animation: rotateBorder 3.5s linear infinite;
+      z-index: 1;
+      filter: drop-shadow(0 0 12px rgba(0, 255, 204, 0.8));
+      pointer-events: none;
+    }
+
+    .card-wrapper::after {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      background: var(--panel-dark);
+      border-radius: 26px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    @keyframes rotateBorder {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* CARAS CON TRANSICIÓN DE FADE */
+    .card-face {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .card-face.hidden-face {
+      display: none;
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    .card-face.active-face {
+      display: block;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .card-title {
+      font-family: 'Outfit', sans-serif;
+      color: var(--text-main);
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .card-sub {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      color: var(--text-main);
+      font-size: 14px;
+      outline: none;
+      position: relative;
+      z-index: 20;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      border-color: var(--brand-neon);
+      box-shadow: 0 0 18px rgba(0, 255, 204, 0.4);
+    }
+
+    .forgot-btn {
+      color: var(--brand-green);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-block;
+      margin-bottom: 20px;
+      transition: text-shadow 0.2s, color 0.2s;
+    }
+
+    .forgot-btn:hover {
+      color: var(--brand-neon);
+      text-shadow: 0 0 12px rgba(0, 255, 204, 0.8);
+      text-decoration: underline;
+    }
+
+    .btn-action {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--brand-green), var(--brand-teal));
+      color: #FFFFFF;
+      border: none;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0, 168, 150, 0.35);
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 20;
+    }
+
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(2, 195, 154, 0.6);
+    }
+
+    .btn-back {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      box-shadow: none;
+    }
+
+    @media (max-width: 900px) {
+      .split-container {
+        flex-direction: column;
+        background: linear-gradient(180deg, #00875A 0%, #00A896 50%, #F8FAFC 100%);
+      }
+      .brand-side { 
+        padding: 40px 20px 20px 20px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="split-container">
+    
+    <!-- LADO IZQUIERDO -->
+    <div class="brand-side">
+      <div class="brand-content">
+        <h1>Construyamos el <span>futuro de su empresa</span> juntos</h1>
+      </div>
+    </div>
+
+    <!-- LADO DERECHO: TARJETA -->
+    <div class="form-side">
+      <div class="card-wrapper">
+        
+        <!-- VISTA 1: INICIO DE SESIÓN -->
+        <div class="card-face active-face" id="faceLogin">
+          <h2 class="card-title">Iniciar Sesión</h2>
+          <p class="card-sub">Ingresa tus credenciales para acceder</p>
+
+          <form id="loginForm">
+            <div class="form-group">
+              <label>Correo Electrónico</label>
+              <input type="email" id="loginCorreo" placeholder="nombre@ejemplo.com" required>
+            </div>
+
+            <div class="form-group">
+              <label>Contraseña</label>
+              <input type="password" id="loginPass" placeholder="••••••••" required>
+            </div>
+
+            <span class="forgot-btn" onclick="mostrarRecuperacion(true)">¿Olvidaste tu contraseña?</span>
+            <button type="submit" class="btn-action">Ingresar</button>
+            <button type="button" class="btn-action btn-back" onclick="registrarUsuario(event)">Registrarse</button>
+          </form>
+        </div>
+
+        <!-- VISTA 2: RECUPERACIÓN -->
+        <div class="card-face hidden-face" id="faceRecuperacion">
+          <h2 class="card-title">Recuperación</h2>
+          <p class="card-sub">Te enviaremos un enlace de restablecimiento seguro</p>
+
+          <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" id="recCorreo" placeholder="tu_correo@gmail.com">
+          </div>
+
+          <button type="button" class="btn-action" onclick="procesarEnvioCodigo()">Enviar Enlace</button>
+          <button type="button" class="btn-action btn-back" onclick="mostrarRecuperacion(false)">Cancelar</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Carga de SDK de Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    // Configuración de Supabase
+    const SUPABASE_URL = 'https://jtfwxkdbwlfynuexnymr.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0Znd4a2Rid2xmeW51ZXhueW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNjI3NTEsImV4cCI6MjEwMjYzODc1MX0.A5BcfT1fKs0FVYkgY9dHhB6tl9JJEA2GJkImSgoxYNE';
+    
+    // Instancia global de Supabase
+    let supabaseClient = null;
+    if (window.supabase) {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    } else {
+      console.error("No se pudo cargar el SDK de Supabase.");
+    }
+
+    // ESCUCHADOR DE EVENTOS DE AUTENTICACIÓN (Para captura del enlace de recuperación)
+    if (supabaseClient) {
+      supabaseClient.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'PASSWORD_RECOVERY') {
+          const nuevaPassword = prompt("Ingresa tu nueva contraseña:");
+          
+          if (nuevaPassword && nuevaPassword.trim() !== "") {
+            const { error } = await supabaseClient.auth.updateUser({
+              password: nuevaPassword.trim()
+            });
+
+            if (error) {
+              alert("Error al actualizar la contraseña: " + error.message);
+            } else {
+              alert("¡Contraseña actualizada con éxito! Ya puedes ingresar con tu nueva clave.");
+              window.location.href = window.location.pathname;
+            }
+          } else {
+            alert("No se ingresó ninguna contraseña.");
+          }
+        }
+      });
+    }
+
+    function mostrarRecuperacion(mostrar) {
+      const faceLogin = document.getElementById('faceLogin');
+      const faceRecuperacion = document.getElementById('faceRecuperacion');
+
+      if (mostrar) {
+        faceLogin.classList.remove('active-face');
+        faceLogin.classList.add('hidden-face');
+        faceRecuperacion.classList.remove('hidden-face');
+        faceRecuperacion.classList.add('active-face');
+        setTimeout(() => {
+          const inputRec = document.getElementById('recCorreo');
+          if (inputRec) inputRec.focus();
+        }, 100);
+      } else {
+        faceRecuperacion.classList.remove('active-face');
+        faceRecuperacion.classList.add('hidden-face');
+        faceLogin.classList.remove('hidden-face');
+        faceLogin.classList.add('active-face');
+        const correoInput = document.getElementById('recCorreo');
+        if (correoInput) correoInput.value = '';
+      }
+    }
+
+    // EVENTO: INICIAR SESIÓN (Verifica si está aprobado)
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const correo = document.getElementById('loginCorreo').value.trim();
+      const pass = document.getElementById('loginPass').value.trim();
+
+      if (!correo || !pass) {
+        alert("Por favor completa todos los campos.");
+        return;
+      }
+
+      if (!supabaseClient) {
+        alert("Error de conexión con la base de datos.");
+        return;
+      }
+
+      const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({
+        email: correo,
+        password: pass,
+      });
+
+      if (authError) {
+        alert("Acceso denegado: " + authError.message);
+        return;
+      }
+
+      const { data: perfil, error: perfilError } = await supabaseClient
+        .from('perfiles')
+        .select('estado')
+        .eq('id', authData.user.id)
+        .single();
+
+      if (perfilError || !perfil || perfil.estado !== 'aprobado') {
+        alert("Tu cuenta está pendiente de aprobación por el administrador.");
+        await supabaseClient.auth.signOut();
+        return;
+      }
+
+      window.location.href = 'Dashboard.html';
+    });
+
+    // FUNCIÓN: REGISTRAR USUARIO
+    async function registrarUsuario(event) {
+      if (event) event.preventDefault();
+
+      const correoInput = document.getElementById('loginCorreo');
+      const passInput = document.getElementById('loginPass');
+
+      const correo = correoInput ? correoInput.value.trim() : '';
+      const pass = passInput ? passInput.value.trim() : '';
+
+      if (!correo || !pass) {
+        alert("Por favor escribe un correo y contraseña en los campos para registrarte.");
+        return;
+      }
+
+      if (!supabaseClient) {
+        alert("Error de conexión con la base de datos.");
+        return;
+      }
+
+      const { data, error } = await supabaseClient.auth.signUp({
+        email: correo,
+        password: pass,
+      });
+
+      if (error) {
+        alert("No se pudo registrar el usuario: " + error.message);
+        return;
+      }
+
+      if (data.user) {
+        const { error: profileError } = await supabaseClient
+          .from('perfiles')
+          .insert([
+            { id: data.user.id, email: correo, estado: 'pendiente' }
+          ]);
+
+        if (profileError) {
+          console.error("Error al crear perfil:", profileError);
+        }
+      }
+
+      alert("Registro exitoso. Tu cuenta ha quedado pendiente de aprobación por el administrador.");
+    }
+
+    // FUNCIÓN: ENVIAR CORREO DE RECUPERACIÓN (Soporta red local y dispositivos externos)
+async function procesarEnvioCodigo() {
+  const correoInput = document.getElementById('recCorreo');
+  const correo = correoInput ? correoInput.value.trim() : '';
+
+  if (!correo) {
+    alert("Por favor ingresa un correo válido.");
+    return;
+  }
+
+  if (!supabaseClient) {
+    alert("Error de conexión con la base de datos.");
+    return;
+  }
+
+  // Toma la URL exacta con la IP actual desde donde estás navegando
+  const redirectUrl = window.location.origin + window.location.pathname;
+
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(correo, {
+    redirectTo: redirectUrl,
+  });
+
+  if (error) {
+    alert("Error al enviar el correo de recuperación: " + error.message);
+  } else {
+    alert("Se ha enviado un enlace seguro a tu correo electrónico para restablecer la contraseña.");
+    mostrarRecuperacion(false);
+  }
+}
+  </script>
+</body>
+</html>

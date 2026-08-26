@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isaac Jacob Image & Technology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .bg-brand-gradient { background: linear-gradient(135deg, #00E6A5 0%, #00B2FE 100%); }
+        .text-gradient {
+            background: linear-gradient(135deg, #00E6A5 0%, #00B2FE 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glow-card {
+            border: 2px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(135deg, rgba(0, 230, 165, 0.4) 0%, rgba(0, 178, 254, 0.4) 100%) border-box;
+            box-shadow: 0 10px 25px -5px rgba(0, 230, 165, 0.12), 0 8px 10px -6px rgba(0, 178, 254, 0.08);
+        }
+        .glow-input:focus {
+            border-color: transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(135deg, #00E6A5 0%, #00B2FE 100%) border-box;
+            box-shadow: 0 0 12px rgba(0, 230, 165, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-slate-50/70 text-[#051D2D] min-h-screen p-4 md:p-8 font-sans">
+
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-[#051D2D] text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-[#00E6A5]/40">
+        <span class="w-2.5 h-2.5 bg-[#00E6A5] rounded-full animate-pulse"></span>
+        <span id="toastMsg" class="text-xs font-bold">Notificación</span>
+    </div>
+
+    <div id="modalEditar" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center hidden transition-all">
+        <div class="bg-white p-7 rounded-3xl glow-card w-full max-w-lg mx-4 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+                <h3 class="text-lg font-black text-[#051D2D]">Editar Lead</h3>
+                <button onclick="cerrarModal()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
+            </div>
+            <form id="formEdit" class="space-y-3">
+                <input type="hidden" id="editId">
+                <div>
+                    <label class="block text-xs font-black text-slate-500 uppercase">Nombre</label>
+                    <input type="text" id="editNombre" required class="w-full p-2.5 border-2 border-slate-100 rounded-xl text-sm font-semibold glow-input">
+                </div>
+                <div>
+                    <label class="block text-xs font-black text-slate-500 uppercase">Teléfono</label>
+                    <input type="text" id="editTelefono" required class="w-full p-2.5 border-2 border-slate-100 rounded-xl text-sm font-semibold glow-input">
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-black text-slate-500 uppercase">Meta ID</label>
+                        <input type="text" id="editMetaId" placeholder="" class="w-full p-2.5 border-2 border-slate-100 rounded-xl text-sm font-semibold glow-input">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-500 uppercase">UTM Content</label>
+                        <input type="text" id="editUtmContent" placeholder="Ej: promo1" class="w-full p-2.5 border-2 border-slate-100 rounded-xl text-sm font-semibold glow-input">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-500 uppercase">UTM Campaign</label>
+                        <input type="text" id="editUtmCampaign" placeholder="" class="w-full p-2.5 border-2 border-slate-100 rounded-xl text-sm font-semibold glow-input">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-black text-slate-500 uppercase">Red Contacto</label>
+                        <select id="editRedContacto" class="w-full p-2.5 border-2 border-slate-100 rounded-xl text-sm font-semibold glow-input">
+                            <option value="N/A">Seleccionar...</option>
+                            <option value="Instagram">Instagram</option>
+                            <option value="WhatsApp">WhatsApp</option>
+                            <option value="Facebook">Facebook</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-500 uppercase">Anuncio</label>
+                        <select id="editAnuncio" class="w-full p-2.5 border-2 border-slate-100 rounded-xl text-sm font-semibold glow-input">
+                            <option value="N/A">Seleccionar...</option>
+                            <option value="Reel">Reel</option>
+                            <option value="Post">Post</option>
+                            <option value="Anuncio">Anuncio</option>
+                            <option value="Historias">Historias</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-black text-slate-500 uppercase mb-1">Estados</label>
+                    <div class="flex gap-4 text-xs font-bold bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="editCalificado" class="accent-[#00A88F]"> Calificado</label>
+                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="editReunion" class="accent-[#00A88F]"> Reunión</label>
+                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="editGanado" class="accent-[#00A88F]"> Ganado</label>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-2 pt-3">
+                    <button type="button" onclick="cerrarModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold text-xs">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 bg-brand-gradient text-white rounded-xl font-black text-xs shadow-md">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <header class="max-w-7xl mx-auto bg-white/90 backdrop-blur-md glow-card p-6 rounded-3xl mb-8 flex justify-between items-center">
+    <div class="flex items-center gap-5">
+        
+        <!-- LOGO MÁS GRANDE -->
+        <img src="Isaac-Jacob.png" alt="Isaac Jacob" class="h-16 md:h-20 w-auto object-contain">
+
+        <!-- TÍTULO Y SUBTÍTULO ABAJO -->
+        <div>
+            <h1 class="text-2xl md:text-3xl font-black tracking-tight text-[#051D2D]">
+                Isaac Jacob <span class="text-gradient">Image & Technology</span>
+            </h1>
+            <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mt-1">
+                SyncKommo Flow · <span id="estadoSync">cargando datos.json...</span>
+            </p>
+        </div>
+
+    </div>
+
+    <!-- BOTONES -->
+    <div class="flex items-center gap-3">
+        <button id="btnRecargar" class="hidden md:flex items-center gap-2 bg-cyan-50 hover:bg-cyan-100 text-[#00B2FE] border border-cyan-200 text-xs font-black px-4 py-2.5 rounded-2xl transition-all active:scale-95">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            Recargar datos.json
+        </button>
+        <button id="btnExportar" class="hidden md:flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-[#00A88F] border border-emerald-200 text-xs font-black px-4 py-2.5 rounded-2xl transition-all active:scale-95">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            Exportar Excel
+        </button>
+    </div>
+</header>
+
+    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        <section class="lg:col-span-4 bg-white p-7 rounded-3xl glow-card h-fit relative overflow-hidden">
+            <div class="mb-6 pb-4 border-b border-slate-100 flex items-center justify-between">
+                <h2 class="text-xl font-black text-[#051D2D] flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 bg-[#00E6A5] rounded-full"></span>
+                    Registrar Nuevo Lead
+                </h2>
+            </div>
+
+            <form id="leadForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Teléfono *</label>
+                    <input type="text" id="telefono" required placeholder="+506 8888 8888" maxlength="15" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Nombre del Cliente *</label>
+                    <input type="text" id="nombre" required class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Estado del Lead</label>
+                    <div class="bg-gradient-to-r from-slate-50 to-slate-100/80 p-3 rounded-2xl border-2 border-slate-100 flex justify-between text-xs font-bold gap-1">
+                        <label class="flex items-center gap-1.5 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition">
+                            <input type="checkbox" id="checkCalificado" class="w-4 h-4 accent-[#00A88F] rounded-md cursor-pointer"> Calificado
+                        </label>
+                        <label class="flex items-center gap-1.5 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition">
+                            <input type="checkbox" id="checkReunion" class="w-4 h-4 accent-[#00A88F] rounded-md cursor-pointer"> Reunión
+                        </label>
+                        <label class="flex items-center gap-1.5 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition">
+                            <input type="checkbox" id="checkGanado" class="w-4 h-4 accent-[#00A88F] rounded-md cursor-pointer"> Ganado
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Fecha y Hora de Contacto</label>
+                    <input type="datetime-local" id="fechaHora" step="1" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Red Contacto</label>
+                        <select id="redContacto" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all cursor-pointer">
+                            <option value="" disabled selected>Seleccionar...</option>
+                            <option value="Instagram">Instagram</option>
+                            <option value="WhatsApp">WhatsApp</option>
+                            <option value="Facebook">Facebook</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Anuncio Proveniencia</label>
+                        <select id="anuncio" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all cursor-pointer">
+                            <option value="" disabled selected>Seleccionar...</option>
+                            <option value="Reel">Reel</option>
+                            <option value="Post">Post</option>
+                            <option value="Anuncio">Anuncio</option>
+                            <option value="Historias">Historias</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Meta ID</label>
+                        <input type="text" id="metaId" placeholder="" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">UTM Content</label>
+                        <input type="text" id="utmContent" placeholder="Ej: promo1" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">UTM Campaign</label>
+                        <input type="text" id="utmCampaign" placeholder="" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+                    </div>
+                </div>
+
+                <div class="flex gap-3 pt-3">
+                    <button type="submit" id="btnSubmit" class="flex-1 bg-brand-gradient hover:opacity-95 text-white font-black py-3 rounded-2xl transition-all shadow-lg shadow-[#00E6A5]/30 active:scale-[0.98]">
+                        Guardar Lead
+                    </button>
+                    <button type="button" id="btnLimpiar" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-4 py-3 rounded-2xl transition-all active:scale-[0.98]">
+                        Limpiar
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <section class="lg:col-span-8 space-y-6">
+
+            <div class="grid grid-cols-3 gap-4">
+                <div class="bg-white p-4 rounded-2xl glow-card text-center">
+                    <span class="block text-xs font-bold text-slate-400 uppercase">Total Registros</span>
+                    <span id="kpiTotal" class="text-2xl font-black text-[#051D2D]">0</span>
+                </div>
+                <div class="bg-white p-4 rounded-2xl glow-card text-center">
+                    <span class="block text-xs font-bold text-slate-400 uppercase">Calificados</span>
+                    <span id="kpiCalificados" class="text-2xl font-black text-[#00B2FE]">0</span>
+                </div>
+                <div class="bg-white p-4 rounded-2xl glow-card text-center">
+                    <span class="block text-xs font-bold text-slate-400 uppercase">Ganados</span>
+                    <span id="kpiGanados" class="text-2xl font-black text-[#00A88F]">0</span>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-3xl glow-card flex items-center justify-between gap-6">
+                <div class="w-full max-w-[180px] h-[120px]">
+                    <canvas id="chartCanales"></canvas>
+                </div>
+                <div class="flex-1 space-y-2">
+                    <h4 class="text-xs font-black uppercase text-slate-400 tracking-wider">Distribución por Canal</h4>
+                    <p class="text-xs text-slate-600 font-medium">Visualiza rápidamente desde qué redes sociales están llegando las consultas principales.</p>
+
+                    <div class="flex flex-wrap gap-3 pt-1 text-xs font-bold">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#E1306C]"></span>
+                            <span class="text-slate-700">Instagram</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#25D366]"></span>
+                            <span class="text-slate-700">WhatsApp</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#1877F2]"></span>
+                            <span class="text-slate-700">Facebook</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-7 rounded-3xl glow-card relative overflow-hidden space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                    <h2 class="text-xl font-black text-[#051D2D] flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 bg-[#00B2FE] rounded-full"></span>
+                        Registros Guardados
+                    </h2>
+
+                    <div class="relative w-full sm:w-64">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <input type="text" id="inputBuscar" placeholder="Buscar por nombre, teléfono o UTM..." class="p-2.5 pl-10 pr-4 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-xs font-semibold text-[#051D2D] focus:outline-none glow-input transition-all w-full">
+                    </div>
+                </div>
+
+                <div class="flex gap-2 border-b border-slate-100 pb-3 overflow-x-auto text-xs font-bold">
+                    <button onclick="filtrarEstado('todos')" class="btn-filtro px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 active-filtro">Todos</button>
+                    <button onclick="filtrarEstado('calificados')" class="btn-filtro px-3 py-1.5 rounded-xl bg-slate-50 text-slate-400 hover:text-slate-600">Calificados</button>
+                    <button onclick="filtrarEstado('reunion')" class="btn-filtro px-3 py-1.5 rounded-xl bg-slate-50 text-slate-400 hover:text-slate-600">Reunión</button>
+                    <button onclick="filtrarEstado('ganados')" class="btn-filtro px-3 py-1.5 rounded-xl bg-slate-50 text-slate-400 hover:text-slate-600">Ganados</button>
+                </div>
+
+                <div class="overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gradient-to-r from-[#051D2D] to-[#0a2f47] text-white font-black text-xs uppercase tracking-wider">
+                            <tr>
+                                <th class="p-3.5">Fecha / Hora</th>
+                                <th class="p-3.5">Teléfono</th>
+                                <th class="p-3.5">Nombre</th>
+                                <th class="p-3.5">Red / Anuncio</th>
+                                <th class="p-3.5">Meta ID / UTM / Campaign</th>
+                                <th class="p-3.5">Estados</th>
+                                <th class="p-3.5 text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaLeads" class="divide-y divide-slate-100 text-slate-700 bg-white font-semibold">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const form = document.getElementById('leadForm');
+        const fechaHoraInput = document.getElementById('fechaHora');
+        const btnLimpiar = document.getElementById('btnLimpiar');
+        const tablaLeads = document.getElementById('tablaLeads');
+        const telefonoInput = document.getElementById('telefono');
+        const inputBuscar = document.getElementById('inputBuscar');
+        const btnExportar = document.getElementById('btnExportar');
+        const btnRecargar = document.getElementById('btnRecargar');
+        const estadoSync = document.getElementById('estadoSync');
+
+        let leadsList = [];
+        let filtroActual = 'todos';
+        let chartInstance = null;
+        let relojTimer = null;
+        let usuarioEditandoFecha = false;
+
+        function getManualLeads() {
+            return JSON.parse(localStorage.getItem('local_leads_manual')) || [];
+        }
+        function setManualLeads(list) {
+            localStorage.setItem('local_leads_manual', JSON.stringify(list));
+        }
+        function getOverrides() {
+            return JSON.parse(localStorage.getItem('kommo_overrides')) || {};
+        }
+        function setOverrides(obj) {
+            localStorage.setItem('kommo_overrides', JSON.stringify(obj));
+        }
+        function getHidden() {
+            return JSON.parse(localStorage.getItem('kommo_hidden')) || [];
+        }
+        function setHidden(arr) {
+            localStorage.setItem('kommo_hidden', JSON.stringify(arr));
+        }
+
+        async function cargarDatosJSON() {
+            try {
+                const resp = await fetch('datos.json', { cache: 'no-store' });
+                if (!resp.ok) throw new Error('No se encontró datos.json');
+                const data = await resp.json();
+                estadoSync.textContent = `datos.json cargado (${data.length} registros)`;
+                return data;
+            } catch (err) {
+                console.warn('No se pudo cargar datos.json:', err);
+                estadoSync.textContent = 'SyncKommo flow';
+                return [];
+            }
+        }
+
+        // Guardián de seguridad: Verifica la sesión activa
+  async function protegerDashboard() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    
+    if (!session) {
+      // Redirigir al login si no hay sesión activa
+      window.location.href = 'Logueo.html';
+    }
+  }
+
+  protegerDashboard();
+
+  // Función para cerrar sesión de forma segura
+  async function cerrarSesion() {
+    await supabaseClient.auth.signOut();
+    window.location.href = 'Logueo.html';
+  }
+
+        function mapearLeadDesdeKommo(row, overrides) {
+            const ov = overrides || {};
+            return {
+                id: 'kommo-' + row.telefono,
+                _origen: 'kommo',
+                telefono: row.telefono,
+                nombre: row.nombre,
+                fecha_contacto: row.fecha_hora_contacto || '',
+                red_contacto: ov.red_contacto || row.red_meta || 'N/A',
+                anuncio_proveniencia: ov.anuncio_proveniencia || row.anuncio_proveniencia || 'N/A',
+                meta_id: ov.meta_id || row.meta_id || 'N/A',
+                utm_content: ov.utm_content || row.utm_content || 'N/A',
+                utm_campaign: ov.utm_campaign || row.utm_campaign || 'N/A',
+                es_calificado: ov.es_calificado !== undefined ? ov.es_calificado : !!row.lead_calificado,
+                es_reunion: ov.es_reunion !== undefined ? ov.es_reunion : !!row.asistio_reunion,
+                es_ganado: ov.es_ganado !== undefined ? ov.es_ganado : !!row.lead_ganado
+            };
+        }
+
+        async function cargarLeads() {
+            const [jsonRows, manualLeads] = [await cargarDatosJSON(), getManualLeads()];
+            const hidden = getHidden();
+            const overrides = getOverrides();
+
+            const kommoLeads = jsonRows
+                .filter(r => r.telefono && !hidden.includes(r.telefono))
+                .map(r => mapearLeadDesdeKommo(r, overrides[r.telefono]));
+
+            const telefonosKommo = new Set(kommoLeads.map(l => l.telefono));
+            const manualSinDuplicar = manualLeads.filter(l => !telefonosKommo.has(l.telefono));
+
+            leadsList = [...manualSinDuplicar, ...kommoLeads].sort((a, b) => {
+                return new Date(b.fecha_contacto || 0) - new Date(a.fecha_contacto || 0);
+            });
+
+            aplicarFiltrosYRender();
+            actualizarKPIs();
+            actualizarGrafico();
+        }
+
+        function actualizarHoraEnTiempoReal() {
+            if (!usuarioEditandoFecha) {
+                const ahora = new Date();
+                ahora.setMinutes(ahora.getMinutes() - ahora.getTimezoneOffset());
+                fechaHoraInput.value = ahora.toISOString().slice(0, 19);
+            }
+        }
+
+        function iniciarReloj() {
+            usuarioEditandoFecha = false;
+            actualizarHoraEnTiempoReal();
+            if (relojTimer) clearInterval(relojTimer);
+            relojTimer = setInterval(actualizarHoraEnTiempoReal, 1000);
+        }
+
+        fechaHoraInput.addEventListener('focus', () => { usuarioEditandoFecha = true; });
+        fechaHoraInput.addEventListener('change', () => { usuarioEditandoFecha = true; });
+
+        iniciarReloj();
+
+        function mostrarToast(mensaje) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = mensaje;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2500);
+        }
+
+        telefonoInput.addEventListener('input', function (e) {
+            let digits = e.target.value.replace(/\D/g, '');
+            if (digits.startsWith('506')) digits = digits.substring(3);
+            digits = digits.substring(0, 8);
+
+            if (digits.length > 4) e.target.value = `+506 ${digits.substring(0, 4)} ${digits.substring(4)}`;
+            else if (digits.length > 0) e.target.value = `+506 ${digits}`;
+            else e.target.value = '';
+        });
+
+        function limpiarFormulario() {
+            form.reset();
+            iniciarReloj();
+        }
+        btnLimpiar.addEventListener('click', limpiarFormulario);
+
+        function formatearFechaLegible(fechaStr) {
+            if (!fechaStr) return 'N/A';
+            const date = new Date(fechaStr);
+            if (isNaN(date.getTime())) return 'N/A';
+            return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}, ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+        }
+
+        function aplicarFiltrosYRender() {
+            let filtrados = leadsList;
+
+            if (filtroActual === 'calificados') filtrados = leadsList.filter(l => l.es_calificado);
+            if (filtroActual === 'reunion') filtrados = leadsList.filter(l => l.es_reunion);
+            if (filtroActual === 'ganados') filtrados = leadsList.filter(l => l.es_ganado);
+
+            const query = inputBuscar.value.toLowerCase();
+            if (query) {
+                filtrados = filtrados.filter(l =>
+                    l.nombre.toLowerCase().includes(query) ||
+                    l.telefono.includes(query) ||
+                    (l.meta_id && l.meta_id.toLowerCase().includes(query)) ||
+                    (l.utm_content && l.utm_content.toLowerCase().includes(query)) ||
+                    (l.utm_campaign && l.utm_campaign.toLowerCase().includes(query))
+                );
+            }
+
+            renderizarTabla(filtrados);
+        }
+
+        function renderizarTabla(lista) {
+            tablaLeads.innerHTML = '';
+
+            if (lista.length === 0) {
+                tablaLeads.innerHTML = `<tr><td colspan="7" class="p-10 text-center text-slate-400 italic">No hay registros para mostrar.</td></tr>`;
+                return;
+            }
+
+            lista.forEach((lead) => {
+                let estadosHTML = '';
+                if (lead.es_calificado) estadosHTML += `<span class="bg-cyan-50 text-[#00B2FE] border border-cyan-200 text-[10px] font-black px-2 py-0.5 rounded-lg mr-1">Calificado</span>`;
+                if (lead.es_reunion) estadosHTML += `<span class="bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-black px-2 py-0.5 rounded-lg mr-1">Reunión</span>`;
+                if (lead.es_ganado) estadosHTML += `<span class="bg-emerald-50 text-[#00A88F] border border-emerald-200 text-[10px] font-black px-2 py-0.5 rounded-lg mr-1">Ganado</span>`;
+                if (!lead.es_calificado && !lead.es_reunion && !lead.es_ganado) estadosHTML = `<span class="text-xs text-slate-400 font-normal">Sin estado</span>`;
+
+                let badgeRedClass = 'bg-slate-100 text-[#051D2D]';
+                if (lead.red_contacto === 'Instagram') badgeRedClass = 'bg-pink-50 text-[#E1306C] border border-pink-100';
+                else if (lead.red_contacto === 'WhatsApp') badgeRedClass = 'bg-emerald-50 text-[#25D366] border border-emerald-100';
+                else if (lead.red_contacto === 'Facebook') badgeRedClass = 'bg-blue-50 text-[#1877F2] border border-blue-100';
+
+                const origenBadge = lead._origen === 'kommo'
+                    ? `<span class="text-[9px] font-black text-slate-300 uppercase">Kommo</span>`
+                    : `<span class="text-[9px] font-black text-slate-300 uppercase">Manual</span>`;
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50/80 transition-all border-b border-slate-100';
+                tr.innerHTML = `
+                    <td class="p-3.5 text-xs text-slate-500 font-medium">${formatearFechaLegible(lead.fecha_contacto)}</td>
+                    <td class="p-3.5 font-black text-[#051D2D]">${lead.telefono} ${origenBadge}</td>
+                    <td class="p-3.5 font-semibold">${lead.nombre}</td>
+                    <td class="p-3.5">
+                        <div class="flex flex-col gap-1">
+                            <span class="${badgeRedClass} text-[11px] px-2 py-0.5 rounded-md font-bold w-fit">${lead.red_contacto}</span>
+                            <span class="text-[10px] text-slate-400 font-medium">${lead.anuncio_proveniencia}</span>
+                        </div>
+                    </td>
+                    <td class="p-3.5">
+                        <div class="flex flex-col gap-0.5 text-xs">
+                            <span class="font-bold text-slate-700"><span class="text-slate-400 font-normal">ID:</span> ${lead.meta_id || 'N/A'}</span>
+                            <span class="text-[11px] text-slate-500"><span class="text-slate-400 font-normal">UTM:</span> ${lead.utm_content || 'N/A'}</span>
+                            <span class="text-[11px] text-slate-500"><span class="text-slate-400 font-normal">Camp:</span> ${lead.utm_campaign || 'N/A'}</span>
+                        </div>
+                    </td>
+                    <td class="p-3.5">${estadosHTML}</td>
+                    <td class="p-3.5 text-center">
+                        <div class="flex items-center justify-center gap-1">
+                            <button onclick="abrirModalEditar('${lead.id}')" title="Editar Lead" class="p-2 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-[#00B2FE] transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                            </button>
+                            <button onclick="eliminarLead('${lead.id}')" title="Eliminar Lead" class="p-2 hover:bg-red-50 rounded-xl text-slate-400 hover:text-red-500 transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tablaLeads.appendChild(tr);
+            });
+        }
+
+        function actualizarKPIs() {
+            document.getElementById('kpiTotal').textContent = leadsList.length;
+            document.getElementById('kpiCalificados').textContent = leadsList.filter(l => l.es_calificado).length;
+            document.getElementById('kpiGanados').textContent = leadsList.filter(l => l.es_ganado).length;
+        }
+
+        function actualizarGrafico() {
+            const counts = { Instagram: 0, WhatsApp: 0, Facebook: 0 };
+            leadsList.forEach(l => { if (counts[l.red_contacto] !== undefined) counts[l.red_contacto]++; });
+
+            const ctx = document.getElementById('chartCanales').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Instagram', 'WhatsApp', 'Facebook'],
+                    datasets: [{
+                        data: [counts.Instagram, counts.WhatsApp, counts.Facebook],
+                        backgroundColor: ['#E1306C', '#25D366', '#1877F2'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    cutout: '70%',
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const nuevoLead = {
+                id: 'manual-' + Date.now().toString(),
+                _origen: 'manual',
+                telefono: telefonoInput.value,
+                nombre: document.getElementById('nombre').value,
+                fecha_contacto: fechaHoraInput.value,
+                red_contacto: document.getElementById('redContacto').value || 'N/A',
+                anuncio_proveniencia: document.getElementById('anuncio').value || 'N/A',
+                meta_id: document.getElementById('metaId').value || 'N/A',
+                utm_content: document.getElementById('utmContent').value || 'N/A',
+                utm_campaign: document.getElementById('utmCampaign').value || 'N/A',
+                es_calificado: document.getElementById('checkCalificado').checked,
+                es_reunion: document.getElementById('checkReunion').checked,
+                es_ganado: document.getElementById('checkGanado').checked
+            };
+
+            const manualLeads = getManualLeads();
+            manualLeads.unshift(nuevoLead);
+            setManualLeads(manualLeads);
+
+            limpiarFormulario();
+            mostrarToast("Lead guardado correctamente");
+            cargarLeads();
+        });
+
+        function abrirModalEditar(id) {
+            const lead = leadsList.find(l => l.id === id);
+            if (!lead) return;
+
+            document.getElementById('editId').value = lead.id;
+            document.getElementById('editNombre').value = lead.nombre;
+            document.getElementById('editTelefono').value = lead.telefono;
+            document.getElementById('editMetaId').value = lead.meta_id !== 'N/A' ? lead.meta_id : '';
+            document.getElementById('editUtmContent').value = lead.utm_content !== 'N/A' ? lead.utm_content : '';
+            document.getElementById('editUtmCampaign').value = lead.utm_campaign !== 'N/A' ? lead.utm_campaign : '';
+            document.getElementById('editRedContacto').value = lead.red_contacto || 'N/A';
+            document.getElementById('editAnuncio').value = lead.anuncio_proveniencia || 'N/A';
+            document.getElementById('editCalificado').checked = lead.es_calificado;
+            document.getElementById('editReunion').checked = lead.es_reunion;
+            document.getElementById('editGanado').checked = lead.es_ganado;
+
+            document.getElementById('editTelefono').disabled = (lead._origen === 'kommo');
+
+            document.getElementById('modalEditar').classList.remove('hidden');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalEditar').classList.add('hidden');
+        }
+
+        document.getElementById('formEdit').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('editId').value;
+            const lead = leadsList.find(l => l.id === id);
+            if (!lead) return cerrarModal();
+
+            const datosEditados = {
+                nombre: document.getElementById('editNombre').value,
+                telefono: document.getElementById('editTelefono').value,
+                meta_id: document.getElementById('editMetaId').value || 'N/A',
+                utm_content: document.getElementById('editUtmContent').value || 'N/A',
+                utm_campaign: document.getElementById('editUtmCampaign').value || 'N/A',
+                red_contacto: document.getElementById('editRedContacto').value || 'N/A',
+                anuncio_proveniencia: document.getElementById('editAnuncio').value || 'N/A',
+                es_calificado: document.getElementById('editCalificado').checked,
+                es_reunion: document.getElementById('editReunion').checked,
+                es_ganado: document.getElementById('editGanado').checked
+            };
+
+            if (lead._origen === 'kommo') {
+                const overrides = getOverrides();
+                overrides[lead.telefono] = {
+                    meta_id: datosEditados.meta_id,
+                    utm_content: datosEditados.utm_content,
+                    utm_campaign: datosEditados.utm_campaign,
+                    red_contacto: datosEditados.red_contacto,
+                    anuncio_proveniencia: datosEditados.anuncio_proveniencia,
+                    es_calificado: datosEditados.es_calificado,
+                    es_reunion: datosEditados.es_reunion,
+                    es_ganado: datosEditados.es_ganado
+                };
+                setOverrides(overrides);
+            } else {
+                const manualLeads = getManualLeads();
+                const idx = manualLeads.findIndex(l => l.id === lead.id);
+                if (idx !== -1) {
+                    manualLeads[idx] = { ...manualLeads[idx], ...datosEditados };
+                    setManualLeads(manualLeads);
+                }
+            }
+
+            cerrarModal();
+            mostrarToast("Registro actualizado");
+            cargarLeads();
+        });
+
+        function eliminarLead(id) {
+            const lead = leadsList.find(l => l.id === id);
+            if (!lead) return;
+
+            if (lead._origen === 'kommo') {
+                const hidden = getHidden();
+                if (!hidden.includes(lead.telefono)) hidden.push(lead.telefono);
+                setHidden(hidden);
+                mostrarToast("Lead oculto (seguirá en Kommo, pero no en esta tabla)");
+            } else {
+                const manualLeads = getManualLeads().filter(l => l.id !== id);
+                setManualLeads(manualLeads);
+                mostrarToast("Lead eliminado");
+            }
+            cargarLeads();
+        }
+
+        function filtrarEstado(estado) {
+            filtroActual = estado;
+            document.querySelectorAll('.btn-filtro').forEach(btn => {
+                btn.className = 'btn-filtro px-3 py-1.5 rounded-xl bg-slate-50 text-slate-400 hover:text-slate-600';
+            });
+            event.target.className = 'btn-filtro px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-black';
+            aplicarFiltrosYRender();
+        }
+
+        inputBuscar.addEventListener('input', aplicarFiltrosYRender);
+
+        btnRecargar.addEventListener('click', function() {
+            mostrarToast("Recargando datos.json...");
+            cargarLeads();
+        });
+
+        btnExportar.addEventListener('click', function() {
+            if(leadsList.length === 0) return mostrarToast("No hay registros para exportar");
+            let csvContent = "data:text/csv;charset=utf-8,Telefono,Nombre,Calificado,Reunion,Ganado,Anuncio,FechaContacto,MetaID,UTMContent,UTMCampaign,RedMeta\n";
+            leadsList.forEach(l => {
+                csvContent += `"${l.telefono}","${l.nombre}",${l.es_calificado},${l.es_reunion},${l.es_ganado},"${l.anuncio_proveniencia}","${l.fecha_contacto}","${l.meta_id}","${l.utm_content}","${l.utm_campaign}","${l.red_contacto}"\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Reporte_Leads_${Date.now()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            mostrarToast("Reporte descargado correctamente");
+        });
+
+        cargarLeads();
+    </script>
+</body>
+</html>
