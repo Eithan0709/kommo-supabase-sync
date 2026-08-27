@@ -25,6 +25,44 @@
                         linear-gradient(135deg, #00E6A5 0%, #00B2FE 100%) border-box;
             box-shadow: 0 0 12px rgba(0, 230, 165, 0.3);
         }
+        /* Ajuste para el logo y título en móviles */
+    .header-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .header-container img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Ajuste para que los checkboxes no se salgan de la pantalla */
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    /* Adaptación completa para pantallas pequeñas */
+    @media (max-width: 600px) {
+      .card, .container {
+        width: 95% !important;
+        padding: 15px !important;
+        margin: 10px auto !important;
+      }
+    }
     </style>
 </head>
 <body class="bg-slate-50/70 text-[#051D2D] min-h-screen p-4 md:p-8 font-sans">
