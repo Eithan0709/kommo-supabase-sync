@@ -127,7 +127,7 @@
         </button>
         <button id="btnExportar" class="hidden md:flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-[#00A88F] border border-emerald-200 text-xs font-black px-4 py-2.5 rounded-2xl transition-all active:scale-95">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            Exportar Excel
+            Descargar
         </button>
     </div>
 </header>
@@ -165,7 +165,18 @@
                         <label class="flex items-center gap-1.5 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition">
                             <input type="checkbox" id="checkGanado" class="w-4 h-4 accent-[#00A88F] rounded-md cursor-pointer"> Ganado
                         </label>
+                        <label class="flex items-center gap-1 cursor-pointer text-rose-600 font-medium">
+            <input type="checkbox" id="noCalificado" class="accent-rose-500" onchange="document.getElementById('contenedorNotaRegistro').classList.toggle('hidden', !this.checked)"> No Calificado
+        </label>
+    </div>
                     </div>
+                    <!-- CAMPO DE NOTA DE DESCALIFICACIÓN (REGISTRO) -->
+<div id="contenedorNotaRegistro" class="hidden col-span-full mt-2">
+    <label for="notaNoCalificado" class="block text-xs font-bold text-rose-500 uppercase mb-1">
+        Motivo por el cual no calificó
+    </label>
+    <textarea id="notaNoCalificado" rows="2" placeholder="Ej: Presupuesto insuficiente, número equivocado..." class="w-full text-xs p-2.5 rounded-xl border border-rose-200 focus:outline-none focus:border-rose-400 bg-rose-50/30"></textarea>
+</div>
                 </div>
 
                 <div>
@@ -225,7 +236,7 @@
 
             <div class="grid grid-cols-3 gap-4">
                 <div class="bg-white p-4 rounded-2xl glow-card text-center">
-                    <span class="block text-xs font-bold text-slate-400 uppercase">Total Registros</span>
+                    <span class="block text-xs font-bold text-slate-400 uppercase">Total Leads</span>
                     <span id="kpiTotal" class="text-2xl font-black text-[#051D2D]">0</span>
                 </div>
                 <div class="bg-white p-4 rounded-2xl glow-card text-center">
@@ -303,7 +314,42 @@
                     </table>
                 </div>
             </div>
-        </section>
+        
+
+        <!-- SEGUNDA TABLA: REGISTRO DETALLADO DE LEADS (EXCEL / KOMMO) -->
+<section class="bg-white p-7 rounded-3xl glow-card relative overflow-hidden space-y-4 mt-8">
+    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+        <h2 class="text-xl font-black text-[#051D2D] flex items-center gap-2">
+            <span class="w-2.5 h-2.5 bg-[#00E6A5] rounded-full"></span>
+            Análisis Detallado de Leads (Registro Extendido)
+        </h2>
+
+        <div class="relative w-full sm:w-64">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            <input type="text" id="inputBuscarExcel" placeholder="Buscar por cliente, rubro, ciudad..." class="p-2.5 pl-10 pr-4 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-xs font-semibold text-[#051D2D] focus:outline-none glow-input transition-all w-full">
+        </div>
+    </div>
+
+    <div class="overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm">
+        <table class="w-full text-left text-sm">
+            <thead class="bg-gradient-to-r from-[#051D2D] to-[#0a2f47] text-white font-black text-xs uppercase tracking-wider">
+                <tr>
+                    <th class="p-3.5">Fecha / Horario</th>
+                    <th class="p-3.5">Teléfono</th>
+                    <th class="p-3.5">Cliente / Ciudad</th>
+                    <th class="p-3.5">Rubro / Anuncio</th>
+                    <th class="p-3.5">¿Habló Problema?</th>
+                    <th class="p-3.5">Valoración</th>
+                    <th class="p-3.5 text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaLeadsExcel" class="divide-y divide-slate-100 text-slate-700 bg-white font-semibold">
+            </tbody>
+        </table>
+    </div>
+</section>
 
     </main>
 

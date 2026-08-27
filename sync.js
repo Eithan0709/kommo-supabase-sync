@@ -25,27 +25,23 @@ const FIELDS = {
   lead_calificado: 169906,
   asistio_reunion: 208170,
   meta_id: 269272,
+  // === NUEVOS CAMPOS EXCEL / KOMMO ===
+  ciudad_origen: null,   // Poné el ID numérico cuando lo tengas (ej: 123456)
+  rubro: null,           // Poné el ID numérico cuando lo tengas
+  horario_mensaje: null, // Poné el ID numérico cuando lo tengas
+  hablo_problema: null,  // Poné el ID numérico cuando lo tengas
+  valoracion: null,      // Poné el ID numérico cuando lo tengas
 };
 
-// Función auxiliar para obtener el valor de un Custom Field (admite Lead o Contacto)
 function getCustomFieldValue(entity, fieldIdOrCode) {
   if (!entity || !fieldIdOrCode) return null;
   const fields = entity?.custom_fields_values || [];
   const field = fields.find(
     (f) => f.field_id === Number(fieldIdOrCode) || f.field_code === fieldIdOrCode
   );
-  
   if (!field || !field.values || !field.values.length) return null;
-
-  // Convierte el valor a String sin importar si viene como número, texto o enum
   const val = field.values[0].value;
   return val !== null && val !== undefined ? String(val) : null;
-}
-
-function obtenerProximaEjecucion(minutos) {
-  const ahora = new Date();
-  ahora.setMinutes(ahora.getMinutes() + minutos);
-  return ahora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 
 function getPhone(contact) {
@@ -71,15 +67,13 @@ async function getAllLeads() {
   while (hasMore) {
     const { data } = await kommo.get('/leads', {
       params: {
-        with: 'contacts,custom_fields', // Incluye los contactos vinculados y los custom fields del lead
+        with: 'contacts,custom_fields',
         limit: 250,
         page,
       },
     });
-
     const leads = data._embedded?.leads || [];
     allLeads = allLeads.concat(leads);
-    console.log(`Página ${page}: ${leads.length} leads`);
     hasMore = leads.length === 250;
     page++;
   }
@@ -94,7 +88,7 @@ async function getAllContacts() {
   while (hasMore) {
     const { data } = await kommo.get('/contacts', {
       params: { 
-        with: 'custom_fields', // Incluye los custom fields del contacto
+        with: 'custom_fields', 
         limit: 250, 
         page 
       },
@@ -111,10 +105,7 @@ async function sync() {
   console.log('Iniciando sincronización...\n');
 
   const leads = await getAllLeads();
-  console.log(`Total leads encontrados: ${leads.length}`);
-
   const contactsMap = await getAllContacts();
-  console.log(`Total contactos encontrados: ${Object.keys(contactsMap).length}\n`);
 
   const rows = [];
 
@@ -139,6 +130,13 @@ async function sync() {
     const utmCampaign = getCustomFieldValue(lead, FIELDS.utm_campaign) || getCustomFieldValue(contact, FIELDS.utm_campaign) || 'N/A';
     const metaIdValue = getCustomFieldValue(lead, FIELDS.meta_id) || getCustomFieldValue(contact, FIELDS.meta_id) || 'N/A';
 
+    // Lectura de los nuevos campos desde Kommo
+    const ciudadOrigen = getCustomFieldValue(lead, FIELDS.ciudad_origen) || getCustomFieldValue(contact, FIELDS.ciudad_origen) || 'N/A';
+    const rubroVal = getCustomFieldValue(lead, FIELDS.rubro) || getCustomFieldValue(contact, FIELDS.rubro) || 'N/A';
+    const horarioMsj = getCustomFieldValue(lead, FIELDS.horario_mensaje) || getCustomFieldValue(contact, FIELDS.horario_mensaje) || '';
+    const habloProb = getCustomFieldValue(lead, FIELDS.hablo_problema) || getCustomFieldValue(contact, FIELDS.hablo_problema) || 'NO';
+    const valoracionVal = getCustomFieldValue(lead, FIELDS.valoracion) || getCustomFieldValue(contact, FIELDS.valoracion) || 'Sin Valorar';
+
     const row = {
       telefono,
       nombre,
@@ -152,13 +150,17 @@ async function sync() {
       utm_content: utmContent,
       red_meta: redSocial,
       kommo_lead_id: lead.id,
+      // === NUEVAS COLUMNAS PARA SUPABASE Y EL DASHBOARD ===
+      ciudad_origen: ciudadOrigen,
+      rubro: rubroVal,
+      horario_mensaje: horarioMsj,
+      hablo_problema: habloProb,
+      valoracion: valoracionVal,
       updated_at: new Date().toISOString(),
     };
 
     rows.push(row);
   }
-
-  console.log(`Filas listas para sincronizar: ${rows.length}\n`);
 
   const batchSize = 150;
   for (let i = 0; i < rows.length; i += batchSize) {
@@ -175,19 +177,12 @@ async function sync() {
   }
 
   fs.writeFileSync('datos.json', JSON.stringify(rows, null, 2));
-  console.log('Archivo datos.json actualizado para el HTML.');
-
-  const MINUTOS_INTERVALO = 15;
-  const proximaHora = obtenerProximaEjecucion(MINUTOS_INTERVALO);
-
-  console.log('¡Sincronización terminada!');
-  console.log(`Próxima actualización programada a las: ${proximaHora}\n`);
+  console.log('Archivo datos.json actualizado con las nuevas columnas.');
 }
 
 const MINUTOS = 15;
 const INTERVALO_MS = MINUTOS * 60 * 1000;
 
-// Ejecución inicial y programación de intervalo
 sync();
 
 setInterval(() => {
