@@ -60,6 +60,24 @@
       gap: 8px !important;
     }
   }
+  /* Hacer que la tabla tenga desplazamiento horizontal en móviles */
+  .table-container, table {
+    display: block !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    width: 100% !important;
+  }
+
+  /* Evitar que las etiquetas/badgdes de estado se corten */
+  td, th {
+    white-space: nowrap !important;
+  }
+
+  /* Ajuste para que las etiquetas de estado no rompan el texto hacia abajo */
+  span[class*="badge"], span[class*="rounded"] {
+    display: inline-block !important;
+    white-space: nowrap !important;
+  }
     </style>
 </head>
 <body class="bg-slate-50/70 text-[#051D2D] min-h-screen p-4 md:p-8 font-sans">
