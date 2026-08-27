@@ -12,7 +12,7 @@
     "utm_content": "N/A",
     "red_meta": "N/A",
     "kommo_lead_id": 670454,
-    "updated_at": "2026-08-26T22:03:53.107Z"
+    "updated_at": "2026-08-26T22:43:18.096Z"
   },
   {
     "telefono": "62308978",
@@ -27,7 +27,7 @@
     "utm_content": "N/A",
     "red_meta": "N/A",
     "kommo_lead_id": 670570,
-    "updated_at": "2026-08-26T22:03:53.107Z"
+    "updated_at": "2026-08-26T22:43:18.096Z"
   },
   {
     "telefono": "22884455",
@@ -42,7 +42,7 @@
     "utm_content": "N/A",
     "red_meta": "N/A",
     "kommo_lead_id": 486450,
-    "updated_at": "2026-08-26T22:03:53.107Z"
+    "updated_at": "2026-08-26T22:43:18.096Z"
   },
   {
     "telefono": "71339558",
@@ -57,7 +57,7 @@
     "utm_content": "N/A",
     "red_meta": "N/A",
     "kommo_lead_id": 670482,
-    "updated_at": "2026-08-26T22:03:53.107Z"
+    "updated_at": "2026-08-26T22:43:18.096Z"
   },
   {
     "telefono": "89745256",
@@ -72,7 +72,7 @@
     "utm_content": "N/A",
     "red_meta": "N/A",
     "kommo_lead_id": 670502,
-    "updated_at": "2026-08-26T22:03:53.107Z"
+    "updated_at": "2026-08-26T22:43:18.096Z"
   },
   {
     "telefono": "48529631",
@@ -87,7 +87,7 @@
     "utm_content": "N/A",
     "red_meta": "N/A",
     "kommo_lead_id": 973048,
-    "updated_at": "2026-08-26T22:03:53.107Z"
+    "updated_at": "2026-08-26T22:43:18.096Z"
   },
   {
     "telefono": "29984475",
@@ -102,7 +102,7 @@
     "utm_content": "N/A",
     "red_meta": "N/A",
     "kommo_lead_id": 1014552,
-    "updated_at": "2026-08-26T22:03:53.107Z"
+    "updated_at": "2026-08-26T22:43:18.097Z"
   },
   {
     "telefono": "50685653377",
@@ -117,7 +117,7 @@
     "utm_content": "N/A",
     "red_meta": "N/A",
     "kommo_lead_id": 496178,
-    "updated_at": "2026-08-26T22:03:53.107Z"
+    "updated_at": "2026-08-26T22:43:18.097Z"
   },
   {
     "telefono": "88665511",
@@ -132,7 +132,7 @@
     "utm_content": "N/A",
     "red_meta": "N/A",
     "kommo_lead_id": 1039298,
-    "updated_at": "2026-08-26T22:03:53.107Z"
+    "updated_at": "2026-08-26T22:43:18.097Z"
   },
   {
     "telefono": "67856732",
@@ -147,7 +147,7 @@
     "utm_content": "N/A",
     "red_meta": "N/A",
     "kommo_lead_id": 1039186,
-    "updated_at": "2026-08-26T22:03:53.107Z"
+    "updated_at": "2026-08-26T22:43:18.097Z"
   },
   {
     "telefono": "75628945",
@@ -162,7 +162,7 @@
     "utm_content": "N/A",
     "red_meta": "N/A",
     "kommo_lead_id": 1039138,
-    "updated_at": "2026-08-26T22:03:53.108Z"
+    "updated_at": "2026-08-26T22:43:18.097Z"
   },
   {
     "telefono": "68952365",
@@ -177,6 +177,21 @@
     "utm_content": "N/A",
     "red_meta": "N/A",
     "kommo_lead_id": 1060768,
-    "updated_at": "2026-08-26T22:03:53.108Z"
+    "updated_at": "2026-08-26T22:43:18.097Z"
+  },
+  {
+    "telefono": "85346210",
+    "nombre": "Sara",
+    "lead_calificado": true,
+    "asistio_reunion": true,
+    "lead_ganado": false,
+    "anuncio_proveniencia": "N/A",
+    "fecha_hora_contacto": "2026-08-26T22:06:37.000Z",
+    "meta_id": "196677",
+    "utm_campaign": "N/A",
+    "utm_content": "N/A",
+    "red_meta": "N/A",
+    "kommo_lead_id": 1067142,
+    "updated_at": "2026-08-26T22:43:18.097Z"
   }
 ]
