@@ -25,44 +25,41 @@
                         linear-gradient(135deg, #00E6A5 0%, #00B2FE 100%) border-box;
             box-shadow: 0 0 12px rgba(0, 230, 165, 0.3);
         }
-        /* Ajuste para el logo y título en móviles */
-    .header-container {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
-      padding: 15px;
-      text-align: center;
+        /* Solución directa para pantallas móviles */
+  @media (max-width: 640px) {
+    /* Desactivar grillas de 3 columnas que aprietan los inputs */
+    .grid-cols-3, [class*="grid-cols-"] {
+      grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
     }
 
-    .header-container img {
-      max-width: 100%;
-      height: auto;
+    /* Permitir que los contenedores del encabezado bajen de línea */
+    div:has(> img) {
+      flex-direction: column !important;
+      text-align: center !important;
+      align-items: center !important;
     }
 
-    /* Ajuste para que los checkboxes no se salgan de la pantalla */
-    .checkbox-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+    /* Romper el texto del título si es muy largo */
+    h1, h2, h3, span {
+      white-space: normal !important;
+      word-break: break-word !important;
     }
 
-    .checkbox-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      white-space: nowrap;
+    /* Acomodar los checkboxes en lista vertical para que no se salgan */
+    div:has(> input[type="checkbox"]) {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 8px !important;
     }
 
-    /* Adaptación completa para pantallas pequeñas */
-    @media (max-width: 600px) {
-      .card, .container {
-        width: 95% !important;
-        padding: 15px !important;
-        margin: 10px auto !important;
-      }
+    /* Dar espacio a cada opción de checkbox */
+    label:has(> input[type="checkbox"]) {
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
     }
+  }
     </style>
 </head>
 <body class="bg-slate-50/70 text-[#051D2D] min-h-screen p-4 md:p-8 font-sans">
