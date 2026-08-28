@@ -180,12 +180,36 @@ async function sync() {
   console.log('Archivo datos.json actualizado con las nuevas columnas.');
 }
 
+// ===== PROGRAMACIÓN DE SINCRONIZACIÓN =====
 const MINUTOS = 15;
 const INTERVALO_MS = MINUTOS * 60 * 1000;
 
-sync();
+function mostrarProximaHora() {
+  const ahora = new Date();
+  const proxima = new Date(ahora.getTime() + INTERVALO_MS);
+  
+  const horaSiguiente = proxima.toLocaleTimeString('es-ES', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  });
 
+  console.log(`\n==================================================`);
+  console.log(`[${ahora.toLocaleTimeString('es-ES', { hour12: true })}] Sincronización completada.`);
+  console.log(`>> PRÓXIMA ACTUALIZACIÓN A LAS: ${horaSiguiente} <<`);
+  console.log(`==================================================\n`);
+}
+
+async function iniciarCiclo() {
+  await sync();
+  mostrarProximaHora();
+}
+
+// Primera ejecución al arrancar
+iniciarCiclo();
+
+// Ciclo automático cada 15 minutos
 setInterval(() => {
-  console.log(`\n[${new Date().toLocaleTimeString()}] Iniciando sincronización programada...`);
-  sync();
+  iniciarCiclo();
 }, INTERVALO_MS);
