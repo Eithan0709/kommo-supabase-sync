@@ -304,8 +304,8 @@
                             <input type="text" id="inputBuscar" placeholder="Buscar por nombre, teléfono o UTM..." class="p-2.5 pl-10 pr-4 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-xs font-semibold text-[#051D2D] focus:outline-none glow-input transition-all w-full">
                         </div>
                         <!-- Botón de despliegue Tabla 1 -->
-                        <button onclick="toggleTabla('contenedorTabla1', 'iconoFlecha1')" class="p-2.5 bg-slate-50 hover:bg-slate-100 rounded-2xl text-slate-500 transition-colors border border-slate-100">
-                            <svg id="iconoFlecha1" class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button onclick="toggleTabla('contenedorTabla1', 'iconoFlecha1')" class="p-2.5 bg-slate-50 hover:bg-slate-100 rounded-2xl text-slate-500 transition-colors border border-slate-100 focus:outline-none">
+                            <svg id="iconoFlecha1" class="w-5 h-5 transition-transform duration-300 rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
@@ -319,22 +319,24 @@
                     <button onclick="filtrarEstado('ganados')" class="btn-filtro px-3 py-1.5 rounded-xl bg-slate-50 text-slate-400 hover:text-slate-600">Ganados</button>
                 </div>
 
-                <div id="contenedorTabla1" class="overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm transition-all duration-300 origin-top">
-                    <table class="w-full text-left text-xs md:text-sm whitespace-nowrap">
-                        <thead class="bg-gradient-to-r from-[#051D2D] to-[#0a2f47] text-white font-black uppercase tracking-wider">
-                            <tr>
-                                <th class="p-3">Fecha / Hora</th>
-                                <th class="p-3">Teléfono</th>
-                                <th class="p-3">Nombre</th>
-                                <th class="p-3">Red / Anuncio</th>
-                                <th class="p-3">Meta ID / UTM / Campaign</th>
-                                <th class="p-3">Estados</th>
-                                <th class="p-3 text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaLeads" class="divide-y divide-slate-100 text-slate-700 bg-white font-semibold">
-                        </tbody>
-                    </table>
+                <div id="contenedorTabla1" class="transition-all duration-300 ease-in-out overflow-hidden max-h-[1000px] opacity-100">
+                    <div class="overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm">
+                        <table class="w-full text-left text-xs md:text-sm whitespace-nowrap">
+                            <thead class="bg-gradient-to-r from-[#051D2D] to-[#0a2f47] text-white font-black uppercase tracking-wider">
+                                <tr>
+                                    <th class="p-3">Fecha / Hora</th>
+                                    <th class="p-3">Teléfono</th>
+                                    <th class="p-3">Nombre</th>
+                                    <th class="p-3">Red / Anuncio</th>
+                                    <th class="p-3">Meta ID / UTM / Campaign</th>
+                                    <th class="p-3">Estados</th>
+                                    <th class="p-3 text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaLeads" class="divide-y divide-slate-100 text-slate-700 bg-white font-semibold">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -354,34 +356,40 @@
                             <input type="text" id="inputBuscarExcel" placeholder="Buscar cliente, rubro, ciudad..." class="p-2.5 pl-10 pr-4 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-xs font-semibold text-[#051D2D] focus:outline-none glow-input transition-all w-full">
                         </div>
                         <!-- Botón de despliegue Tabla 2 -->
-                        <button onclick="toggleTabla('contenedorTabla2', 'iconoFlecha2')" class="p-2.5 bg-slate-50 hover:bg-slate-100 rounded-2xl text-slate-500 transition-colors border border-slate-100">
-                            <svg id="iconoFlecha2" class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button onclick="toggleTabla('contenedorTabla2', 'iconoFlecha2')" class="p-2.5 bg-slate-50 hover:bg-slate-100 rounded-2xl text-slate-500 transition-colors border border-slate-100 focus:outline-none">
+                            <svg id="iconoFlecha2" class="w-5 h-5 transition-transform duration-300 rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
                     </div>
                 </div>
 
-                <div id="contenedorTabla2" class="overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm transition-all duration-300 origin-top">
-                    <table class="w-full text-left text-xs md:text-sm whitespace-nowrap">
-                        <thead class="bg-gradient-to-r from-[#051D2D] to-[#0a2f47] text-white font-black uppercase tracking-wider">
-                            <tr>
-                                <th class="p-3">Fecha / Horario</th>
-                                <th class="p-3">Teléfono</th>
-                                <th class="p-3">Cliente / Ciudad</th>
-                                <th class="p-3">Rubro / Anuncio</th>
-                                <th class="p-3">¿Habló Problema?</th>
-                                <th class="p-3">Valoración</th>
-                                <th class="p-3 text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaLeadsExcel" class="divide-y divide-slate-100 text-slate-700 bg-white font-semibold">
-                        </tbody>
-                    </table>
+                <div id="contenedorTabla2" class="transition-all duration-300 ease-in-out overflow-hidden max-h-[1000px] opacity-100">
+                    <div class="overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm">
+                        <table class="w-full text-left text-xs md:text-sm whitespace-nowrap">
+                            <thead class="bg-gradient-to-r from-[#051D2D] to-[#0a2f47] text-white font-black uppercase tracking-wider">
+                                <tr>
+                                    <th class="p-3">Fecha / Horario</th>
+                                    <th class="p-3">Teléfono</th>
+                                    <th class="p-3">Cliente / Ciudad</th>
+                                    <th class="p-3">Rubro / Anuncio</th>
+                                    <th class="p-3">¿Habló Problema?</th>
+                                    <th class="p-3">Valoración</th>
+                                    <th class="p-3 text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaLeadsExcel" class="divide-y divide-slate-100 text-slate-700 bg-white font-semibold">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
         </section>
+
+    </main>
+</body>
+</html>
 
     </main>
 
@@ -865,18 +873,24 @@
         });
     }
 
-    // FUNCIÓN PARA DESPLEGAR Y RECOGER TABLAS
+    // FUNCIÓN MEJORADA PARA DESPLEGAR Y RECOGER TABLAS CON ANIMACIÓN SUAVE
     function toggleTabla(idContenedor, idIcono) {
         const contenedor = document.getElementById(idContenedor);
         const icono = document.getElementById(idIcono);
 
         if (contenedor && icono) {
-            contenedor.classList.toggle('hidden');
-            
-            if (contenedor.classList.contains('hidden')) {
-                icono.classList.add('-rotate-90');
-            } else {
+            const estaOculto = contenedor.classList.contains('opacity-0');
+
+            if (estaOculto) {
+                // Mostrar con animación
+                contenedor.classList.remove('pointer-events-none', 'opacity-0', 'max-h-0', 'scale-95');
+                contenedor.classList.add('opacity-100', 'max-h-[2000px]', 'scale-100');
                 icono.classList.remove('-rotate-90');
+            } else {
+                // Ocultar con animación
+                contenedor.classList.remove('opacity-100', 'max-h-[2000px]', 'scale-100');
+                contenedor.classList.add('pointer-events-none', 'opacity-0', 'max-h-0', 'scale-95');
+                icono.classList.add('-rotate-90');
             }
         }
     }
