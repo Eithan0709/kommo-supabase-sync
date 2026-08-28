@@ -659,10 +659,10 @@
             tr2.innerHTML = `
                 <td class="p-3.5 text-slate-500 font-medium">${formatearFechaLegible(lead.fecha_contacto)}</td>
                 <td class="p-3.5 font-black text-[#051D2D]">${lead.telefono}</td>
-                <td class="p-3.5 font-semibold">${lead.nombre}</td>
-                <td class="p-3.5 text-slate-600">${lead.anuncio_proveniencia || 'N/A'}</td>
-                <td class="p-3.5 text-slate-500">${lead.utm_content || 'N/A'}</td>
-                <td class="p-3.5 text-slate-500">${lead.utm_campaign || 'N/A'}</td>
+                <td class="p-3.5 font-semibold">${lead.nombre} / <span class="text-slate-400">${lead.ciudad_origen || 'N/A'}</span></td>
+                <td class="p-3.5 text-slate-600">${lead.rubro || 'N/A'} / <span class="text-slate-400">${lead.anuncio_proveniencia || 'N/A'}</span></td>
+                <td class="p-3.5 text-slate-500">${lead.hablo_problema || 'NO'}</td>
+                <td class="p-3.5 text-slate-500">${lead.valoracion || 'Sin Valorar'}</td>
             `;
             tablaDetallada.appendChild(tr2);
         }
