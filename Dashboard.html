@@ -197,16 +197,16 @@
             <option value="Facebook">Facebook</option>
         </select>
     </div>
-    <div>
-        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">Anuncio Proveniencia</label>
-        <select id="anuncio" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all cursor-pointer">
-            <option value="" disabled selected>Seleccionar...</option>
-            <option value="Reel">Reel</option>
-            <option value="Post">Post</option>
-            <option value="Anuncio">Anuncio</option>
-            <option value="Historias">Historias</option>
-        </select>
-    </div>
+    <!-- CÓDIGO CORREGIDO -->
+<div class="flex flex-col space-y-1">
+    <label class="text-xs font-bold text-slate-500 uppercase">Anuncio Proveniencia</label>
+    <select id="anuncio" class="p-2 border border-slate-200 rounded-lg text-sm bg-white text-slate-700 focus:outline-none focus:border-cyan-500">
+        <option value="">Seleccionar...</option>
+        <option value="Reel">Reel</option>
+        <option value="Post">Post</option>
+        <option value="Anuncio">Anuncio</option>
+        <option value="Historias">Historias</option>
+    </select>
 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
