@@ -300,15 +300,17 @@
     </div>
 
     <!-- LADO DERECHO: TARJETA -->
-   <div class="form-side" style="position: relative;">
+    <div class="form-side">
 
-    <!-- LOGO ARRIBA DE LA TARJETA EN LA ZONA CLARA -->
-    <div style="position: absolute; top: 40px; left: 50%; transform: translateX(-50%); text-align: center; z-index: 10;">
-        <img src="Isaac-Jacob.png" alt="Escudo Isaac Jacob" style="height: 60px; width: auto; object-fit: contain;">
-    </div>
-
-    <div class="card-wrapper" style="margin-top: 50px;">
+      <div class="card-wrapper">
+        
+        <!-- VISTA 1: LOGIN -->
         <div class="card-face active-face" id="faceLogin">
+            <!-- LOGO INTEGRADO DENTRO DE LA TARJETA -->
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="Isaac-Jacob.png" alt="Escudo Isaac Jacob" style="height: 55px; width: auto; object-fit: contain;">
+            </div>
+
             <h2 class="card-title">Iniciar Sesión</h2>
             <p class="card-sub">Ingresa tus credenciales para acceder</p>
 
@@ -328,22 +330,27 @@
                 <button type="button" class="btn-action btn-back" onclick="registrarUsuario(event)">Registrarse</button>
             </form>
         </div>
-    </div>
+
         <!-- VISTA 2: RECUPERACIÓN -->
         <div class="card-face hidden-face" id="faceRecuperacion">
-          <h2 class="card-title">Recuperación</h2>
-          <p class="card-sub">Te enviaremos un enlace de restablecimiento seguro</p>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="Isaac-Jacob.png" alt="Escudo Isaac Jacob" style="height: 55px; width: auto; object-fit: contain;">
+            </div>
 
-          <div class="form-group">
-            <label>Correo Electrónico</label>
-            <input type="email" id="recCorreo" placeholder="tu_correo@gmail.com">
-          </div>
+            <h2 class="card-title">Recuperación</h2>
+            <p class="card-sub">Te enviaremos un enlace de restablecimiento seguro</p>
 
-          <button type="button" class="btn-action" onclick="procesarEnvioCodigo()">Enviar Enlace</button>
-          <button type="button" class="btn-action btn-back" onclick="mostrarRecuperacion(false)">Cancelar</button>
+            <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" id="recCorreo" placeholder="tu_correo@gmail.com">
+            </div>
+
+            <button type="button" class="btn-action" onclick="procesarEnvioCodigo()">Enviar Enlace</button>
+            <button type="button" class="btn-action btn-back" onclick="mostrarRecuperacion(false)">Cancelar</button>
         </div>
 
       </div>
+
     </div>
 
   </div>
