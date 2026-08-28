@@ -371,142 +371,153 @@
 </html>
 
     <script>
-        const form = document.getElementById('leadForm');
-        const fechaHoraInput = document.getElementById('fechaHora');
-        const btnLimpiar = document.getElementById('btnLimpiar');
-        const tablaLeads = document.getElementById('tablaLeads');
-        const telefonoInput = document.getElementById('telefono');
-        const inputBuscar = document.getElementById('inputBuscar');
-        const btnExportar = document.getElementById('btnExportar');
-        const btnRecargar = document.getElementById('btnRecargar');
-        const estadoSync = document.getElementById('estadoSync');
-        const tablaDetallada = document.getElementById('tablaDetallada'); 
-// Reemplaza 'tablaDetallada' con el id exacto de tu <tbody> en el HTML
+    const form = document.getElementById('leadForm');
+    const fechaHoraInput = document.getElementById('fechaHora');
+    const btnLimpiar = document.getElementById('btnLimpiar');
+    const tablaLeads = document.getElementById('tablaLeads');
+    const telefonoInput = document.getElementById('telefono');
+    const inputBuscar = document.getElementById('inputBuscar');
+    const btnExportar = document.getElementById('btnExportar');
+    const btnRecargar = document.getElementById('btnRecargar');
+    const estadoSync = document.getElementById('estadoSync');
+    const tablaDetallada = document.getElementById('tablaDetallada'); 
 
-        let leadsList = [];
-        let filtroActual = 'todos';
-        let chartInstance = null;
-        let relojTimer = null;
-        let usuarioEditandoFecha = false;
+    let leadsList = [];
+    let filtroActual = 'todos';
+    let chartInstance = null;
+    let relojTimer = null;
+    let usuarioEditandoFecha = false;
 
-        function getManualLeads() {
-            return JSON.parse(localStorage.getItem('local_leads_manual')) || [];
-        }
-        function setManualLeads(list) {
-            localStorage.setItem('local_leads_manual', JSON.stringify(list));
-        }
-        function getOverrides() {
-            return JSON.parse(localStorage.getItem('kommo_overrides')) || {};
-        }
-        function setOverrides(obj) {
-            localStorage.setItem('kommo_overrides', JSON.stringify(obj));
-        }
-        function getHidden() {
-            return JSON.parse(localStorage.getItem('kommo_hidden')) || [];
-        }
-        function setHidden(arr) {
-            localStorage.setItem('kommo_hidden', JSON.stringify(arr));
-        }
-
-        async function cargarDatosJSON() {
-            try {
-                const resp = await fetch('datos.json', { cache: 'no-store' });
-                if (!resp.ok) throw new Error('No se encontró datos.json');
-                const data = await resp.json();
-                estadoSync.textContent = `datos.json cargado (${data.length} registros)`;
-                return data;
-            } catch (err) {
-                console.warn('No se pudo cargar datos.json:', err);
-                estadoSync.textContent = 'SyncKommo flow';
-                return [];
-            }
-        }
-
-        // Guardián de seguridad: Verifica la sesión activa
-  async function protegerDashboard() {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    
-    if (!session) {
-      // Redirigir al login si no hay sesión activa
-      window.location.href = 'Logueo.html';
+    function getManualLeads() {
+        return JSON.parse(localStorage.getItem('local_leads_manual')) || [];
     }
-  }
+    function setManualLeads(list) {
+        localStorage.setItem('local_leads_manual', JSON.stringify(list));
+    }
+    function getOverrides() {
+        return JSON.parse(localStorage.getItem('kommo_overrides')) || {};
+    }
+    function setOverrides(obj) {
+        localStorage.setItem('kommo_overrides', JSON.stringify(obj));
+    }
+    function getHidden() {
+        return JSON.parse(localStorage.getItem('kommo_hidden')) || [];
+    }
+    function setHidden(arr) {
+        localStorage.setItem('kommo_hidden', JSON.stringify(arr));
+    }
 
-  protegerDashboard();
-
-  // Función para cerrar sesión de forma segura
-  async function cerrarSesion() {
-    await supabaseClient.auth.signOut();
-    window.location.href = 'Logueo.html';
-  }
-
-        function mapearLeadDesdeKommo(row, overrides) {
-            const ov = overrides || {};
-            return {
-                id: 'kommo-' + row.telefono,
-                _origen: 'kommo',
-                telefono: row.telefono,
-                nombre: row.nombre,
-                fecha_contacto: row.fecha_hora_contacto || '',
-                red_contacto: ov.red_contacto || row.red_meta || 'N/A',
-                anuncio_proveniencia: ov.anuncio_proveniencia || row.anuncio_proveniencia || 'N/A',
-                meta_id: ov.meta_id || row.meta_id || 'N/A',
-                utm_content: ov.utm_content || row.utm_content || 'N/A',
-                utm_campaign: ov.utm_campaign || row.utm_campaign || 'N/A',
-                es_calificado: ov.es_calificado !== undefined ? ov.es_calificado : !!row.lead_calificado,
-                es_reunion: ov.es_reunion !== undefined ? ov.es_reunion : !!row.asistio_reunion,
-                es_ganado: ov.es_ganado !== undefined ? ov.es_ganado : !!row.lead_ganado
-            };
+    async function cargarDatosJSON() {
+        try {
+            const resp = await fetch('datos.json', { cache: 'no-store' });
+            if (!resp.ok) throw new Error('No se encontró datos.json');
+            const data = await resp.json();
+            estadoSync.textContent = `datos.json cargado (${data.length} registros)`;
+            return data;
+        } catch (err) {
+            console.warn('No se pudo cargar datos.json:', err);
+            estadoSync.textContent = 'SyncKommo flow';
+            return [];
         }
+    }
 
-        async function cargarLeads() {
-            const [jsonRows, manualLeads] = [await cargarDatosJSON(), getManualLeads()];
-            const hidden = getHidden();
-            const overrides = getOverrides();
-
-            const kommoLeads = jsonRows
-                .filter(r => r.telefono && !hidden.includes(r.telefono))
-                .map(r => mapearLeadDesdeKommo(r, overrides[r.telefono]));
-
-            const telefonosKommo = new Set(kommoLeads.map(l => l.telefono));
-            const manualSinDuplicar = manualLeads.filter(l => !telefonosKommo.has(l.telefono));
-
-            leadsList = [...manualSinDuplicar, ...kommoLeads].sort((a, b) => {
-                return new Date(b.fecha_contacto || 0) - new Date(a.fecha_contacto || 0);
-            });
-
-            aplicarFiltrosYRender();
-            actualizarKPIs();
-            actualizarGrafico();
-        }
-
-        function actualizarHoraEnTiempoReal() {
-            if (!usuarioEditandoFecha) {
-                const ahora = new Date();
-                ahora.setMinutes(ahora.getMinutes() - ahora.getTimezoneOffset());
-                fechaHoraInput.value = ahora.toISOString().slice(0, 19);
+    // Guardián de seguridad: Verifica la sesión activa
+    async function protegerDashboard() {
+        if (typeof supabaseClient !== 'undefined') {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = 'Logueo.html';
             }
         }
+    }
 
-        function iniciarReloj() {
-            usuarioEditandoFecha = false;
-            actualizarHoraEnTiempoReal();
-            if (relojTimer) clearInterval(relojTimer);
-            relojTimer = setInterval(actualizarHoraEnTiempoReal, 1000);
+    protegerDashboard();
+
+    async function cerrarSesion() {
+        if (typeof supabaseClient !== 'undefined') {
+            await supabaseClient.auth.signOut();
+            window.location.href = 'Logueo.html';
         }
+    }
 
+    function mapearLeadDesdeKommo(row, overrides) {
+        const ov = overrides || {};
+        return {
+            id: 'kommo-' + row.telefono,
+            _origen: 'kommo',
+            telefono: row.telefono,
+            nombre: row.nombre,
+            fecha_contacto: row.fecha_hora_contacto || '',
+            red_contacto: ov.red_contacto || row.red_meta || 'N/A',
+            anuncio_proveniencia: ov.anuncio_proveniencia || row.anuncio_proveniencia || 'N/A',
+            meta_id: ov.meta_id || row.meta_id || 'N/A',
+            utm_content: ov.utm_content || row.utm_content || 'N/A',
+            utm_campaign: ov.utm_campaign || row.utm_campaign || 'N/A',
+            es_calificado: ov.es_calificado !== undefined ? ov.es_calificado : !!row.lead_calificado,
+            es_reunion: ov.es_reunion !== undefined ? ov.es_reunion : !!row.asistio_reunion,
+            es_ganado: ov.es_ganado !== undefined ? ov.es_ganado : !!row.lead_ganado,
+            // Campos para la tabla detallada
+            ciudad_origen: ov.ciudad_origen || row.ciudad_origen || row.ciudad || 'N/A',
+            rubro: ov.rubro || row.rubro || 'N/A',
+            hablo_problema: ov.hablo_problema || row.hablo_problema || 'NO',
+            valoracion: ov.valoracion || row.valoracion || 'Sin Valorar'
+        };
+    }
+
+    async function cargarLeads() {
+        const [jsonRows, manualLeads] = [await cargarDatosJSON(), getManualLeads()];
+        const hidden = getHidden();
+        const overrides = getOverrides();
+
+        const kommoLeads = jsonRows
+            .filter(r => r.telefono && !hidden.includes(r.telefono))
+            .map(r => mapearLeadDesdeKommo(r, overrides[r.telefono]));
+
+        const telefonosKommo = new Set(kommoLeads.map(l => l.telefono));
+        const manualSinDuplicar = manualLeads.filter(l => !telefonosKommo.has(l.telefono));
+
+        leadsList = [...manualSinDuplicar, ...kommoLeads].sort((a, b) => {
+            return new Date(b.fecha_contacto || 0) - new Date(a.fecha_contacto || 0);
+        });
+
+        aplicarFiltrosYRender();
+        actualizarKPIs();
+        actualizarGrafico();
+    }
+
+    function actualizarHoraEnTiempoReal() {
+        if (!usuarioEditandoFecha && fechaHoraInput) {
+            const ahora = new Date();
+            ahora.setMinutes(ahora.getMinutes() - ahora.getTimezoneOffset());
+            fechaHoraInput.value = ahora.toISOString().slice(0, 19);
+        }
+    }
+
+    function iniciarReloj() {
+        usuarioEditandoFecha = false;
+        actualizarHoraEnTiempoReal();
+        if (relojTimer) clearInterval(relojTimer);
+        relojTimer = setInterval(actualizarHoraEnTiempoReal, 1000);
+    }
+
+    if (fechaHoraInput) {
         fechaHoraInput.addEventListener('focus', () => { usuarioEditandoFecha = true; });
         fechaHoraInput.addEventListener('change', () => { usuarioEditandoFecha = true; });
+    }
 
-        iniciarReloj();
+    iniciarReloj();
 
-        function mostrarToast(mensaje) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').textContent = mensaje;
+    function mostrarToast(mensaje) {
+        const toast = document.getElementById('toast');
+        const toastMsg = document.getElementById('toastMsg');
+        if (toast && toastMsg) {
+            toastMsg.textContent = mensaje;
             toast.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2500);
         }
+    }
 
+    if (telefonoInput) {
         telefonoInput.addEventListener('input', function (e) {
             let digits = e.target.value.replace(/\D/g, '');
             if (digits.startsWith('506')) digits = digits.substring(3);
@@ -516,173 +527,198 @@
             else if (digits.length > 0) e.target.value = `+506 ${digits}`;
             else e.target.value = '';
         });
-
-        function limpiarFormulario() {
-            form.reset();
-            iniciarReloj();
-        }
-        btnLimpiar.addEventListener('click', limpiarFormulario);
-
-        function formatearFechaLegible(fechaStr) {
-            if (!fechaStr) return 'N/A';
-            const date = new Date(fechaStr);
-            if (isNaN(date.getTime())) return 'N/A';
-            return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}, ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
-        }
-
-        function aplicarFiltrosYRender() {
-            let filtrados = leadsList;
-
-            if (filtroActual === 'calificados') filtrados = leadsList.filter(l => l.es_calificado);
-            if (filtroActual === 'reunion') filtrados = leadsList.filter(l => l.es_reunion);
-            if (filtroActual === 'ganados') filtrados = leadsList.filter(l => l.es_ganado);
-
-            const query = inputBuscar.value.toLowerCase();
-            if (query) {
-                filtrados = filtrados.filter(l =>
-                    l.nombre.toLowerCase().includes(query) ||
-                    l.telefono.includes(query) ||
-                    (l.meta_id && l.meta_id.toLowerCase().includes(query)) ||
-                    (l.utm_content && l.utm_content.toLowerCase().includes(query)) ||
-                    (l.utm_campaign && l.utm_campaign.toLowerCase().includes(query))
-                );
-            }
-
-            renderizarTabla(filtrados);
-        }
-
-        function renderizarTabla(lista) {
-    // 1. Limpiar ambas tablas antes de rellenar
-    tablaLeads.innerHTML = '';
-    if (tablaDetallada) tablaDetallada.innerHTML = '';
-
-    // 2. Manejo de lista vacía
-    if (lista.length === 0) {
-        tablaLeads.innerHTML = `<tr><td colspan="7" class="p-10 text-center text-slate-400 italic">No hay registros para mostrar.</td></tr>`;
-        if (tablaDetallada) {
-            tablaDetallada.innerHTML = `<tr><td colspan="6" class="p-10 text-center text-slate-400 italic">No hay registros para mostrar.</td></tr>`;
-        }
-        return;
     }
 
-    // 3. Renderizar cada registro en ambas tablas
-    lista.forEach((lead) => {
-        // --- CÓDIGO PRIMERA TABLA ---
-        let estadosHTML = '';
-        if (lead.es_calificado) estadosHTML += `<span class="bg-cyan-50 text-[#00B2FE] border border-cyan-200 text-[10px] font-black px-2 py-0.5 rounded-lg mr-1">Calificado</span>`;
-        if (lead.es_reunion) estadosHTML += `<span class="bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-black px-2 py-0.5 rounded-lg mr-1">Reunión</span>`;
-        if (lead.es_ganado) estadosHTML += `<span class="bg-emerald-50 text-[#00A88F] border border-emerald-200 text-[10px] font-black px-2 py-0.5 rounded-lg mr-1">Ganado</span>`;
-        if (!lead.es_calificado && !lead.es_reunion && !lead.es_ganado) estadosHTML = `<span class="text-xs text-slate-400 font-normal">Sin estado</span>`;
+    function limpiarFormulario() {
+        if (form) form.reset();
+        iniciarReloj();
+    }
+    if (btnLimpiar) btnLimpiar.addEventListener('click', limpiarFormulario);
 
-        let badgeRedClass = 'bg-slate-100 text-[#051D2D]';
-        if (lead.red_contacto === 'Instagram') badgeRedClass = 'bg-pink-50 text-[#E1306C] border border-pink-100';
-        else if (lead.red_contacto === 'WhatsApp') badgeRedClass = 'bg-emerald-50 text-[#25D366] border border-emerald-100';
-        else if (lead.red_contacto === 'Facebook') badgeRedClass = 'bg-blue-50 text-[#1877F2] border border-blue-100';
+    function formatearFechaLegible(fechaStr) {
+        if (!fechaStr) return 'N/A';
+        const date = new Date(fechaStr);
+        if (isNaN(date.getTime())) return 'N/A';
+        return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}, ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+    }
 
-        const origenBadge = lead._origen === 'kommo'
-            ? `<span class="text-[9px] font-black text-slate-300 uppercase">Kommo</span>`
-            : `<span class="text-[9px] font-black text-slate-300 uppercase">Manual</span>`;
+    function aplicarFiltrosYRender() {
+        let filtrados = leadsList;
 
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-50/80 transition-all border-b border-slate-100';
-        tr.innerHTML = `
-            <td class="p-3.5 text-xs text-slate-500 font-medium">${formatearFechaLegible(lead.fecha_contacto)}</td>
-            <td class="p-3.5 font-black text-[#051D2D]">${lead.telefono} ${origenBadge}</td>
-            <td class="p-3.5 font-semibold">${lead.nombre}</td>
-            <td class="p-3.5">
-                <div class="flex flex-col gap-1">
-                    <span class="${badgeRedClass} text-[11px] px-2 py-0.5 rounded-md font-bold w-fit">${lead.red_contacto}</span>
-                    <span class="text-[10px] text-slate-400 font-medium">${lead.anuncio_proveniencia}</span>
-                </div>
-            </td>
-            <td class="p-3.5">
-                <div class="flex flex-col gap-0.5 text-xs">
-                    <span class="font-bold text-slate-700"><span class="text-slate-400 font-normal">ID:</span> ${lead.meta_id || 'N/A'}</span>
-                    <span class="text-[11px] text-slate-500"><span class="text-slate-400 font-normal">UTM:</span> ${lead.utm_content || 'N/A'}</span>
-                    <span class="text-[11px] text-slate-500"><span class="text-slate-400 font-normal">Camp:</span> ${lead.utm_campaign || 'N/A'}</span>
-                </div>
-            </td>
-            <td class="p-3.5">${estadosHTML}</td>
-            <td class="p-3.5 text-center">
-                <div class="flex items-center justify-center gap-1">
-                    <button onclick="abrirModalEditar('${lead.id}')" title="Editar Lead" class="p-2 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-[#00B2FE] transition-all">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                    </button>
-                    <button onclick="eliminarLead('${lead.id}')" title="Eliminar Lead" class="p-2 hover:bg-red-50 rounded-xl text-slate-400 hover:text-red-500 transition-all">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    </button>
-                </div>
-            </td>
-        `;
-        tablaLeads.appendChild(tr);
+        if (filtroActual === 'calificados') filtrados = leadsList.filter(l => l.es_calificado);
+        if (filtroActual === 'reunion') filtrados = leadsList.filter(l => l.es_reunion);
+        if (filtroActual === 'ganados') filtrados = leadsList.filter(l => l.es_ganado);
 
-        // --- CÓDIGO SEGUNDA TABLA (ANÁLISIS DETALLADO) ---
-        if (tablaDetallada) {
-            const tr2 = document.createElement('tr');
-            tr2.className = 'hover:bg-slate-50/80 transition-all border-b border-slate-100 text-xs';
-            tr2.innerHTML = `
-                <td class="p-3.5 text-slate-500 font-medium">${formatearFechaLegible(lead.fecha_contacto)}</td>
-                <td class="p-3.5 font-black text-[#051D2D]">${lead.telefono}</td>
-                <td class="p-3.5 font-semibold">${lead.nombre} / <span class="text-slate-400">${lead.ciudad_origen || 'N/A'}</span></td>
-                <td class="p-3.5 text-slate-600">${lead.rubro || 'N/A'} / <span class="text-slate-400">${lead.anuncio_proveniencia || 'N/A'}</span></td>
-                <td class="p-3.5 text-slate-500">${lead.hablo_problema || 'NO'}</td>
-                <td class="p-3.5 text-slate-500">${lead.valoracion || 'Sin Valorar'}</td>
-            `;
-            tablaDetallada.appendChild(tr2);
-        }
-    });
-}
-
-        function actualizarKPIs() {
-            document.getElementById('kpiTotal').textContent = leadsList.length;
-            document.getElementById('kpiCalificados').textContent = leadsList.filter(l => l.es_calificado).length;
-            document.getElementById('kpiGanados').textContent = leadsList.filter(l => l.es_ganado).length;
+        const query = inputBuscar ? inputBuscar.value.toLowerCase() : '';
+        if (query) {
+            filtrados = filtrados.filter(l =>
+                (l.nombre && l.nombre.toLowerCase().includes(query)) ||
+                (l.telefono && l.telefono.includes(query)) ||
+                (l.meta_id && l.meta_id.toLowerCase().includes(query)) ||
+                (l.utm_content && l.utm_content.toLowerCase().includes(query)) ||
+                (l.utm_campaign && l.utm_campaign.toLowerCase().includes(query))
+            );
         }
 
-        function actualizarGrafico() {
-            const counts = { Instagram: 0, WhatsApp: 0, Facebook: 0 };
-            leadsList.forEach(l => { if (counts[l.red_contacto] !== undefined) counts[l.red_contacto]++; });
+        renderizarTabla(filtrados);
+    }
 
-            const ctx = document.getElementById('chartCanales').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
+    function renderizarTabla(lista) {
+        if (tablaLeads) tablaLeads.innerHTML = '';
+        if (tablaDetallada) tablaDetallada.innerHTML = '';
 
-            chartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Instagram', 'WhatsApp', 'Facebook'],
-                    datasets: [{
-                        data: [counts.Instagram, counts.WhatsApp, counts.Facebook],
-                        backgroundColor: ['#E1306C', '#25D366', '#1877F2'],
-                        borderWidth: 2,
-                        borderColor: '#ffffff'
-                    }]
-                },
-                options: {
-                    plugins: { legend: { display: false } },
-                    cutout: '70%',
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
-            });
+        if (lista.length === 0) {
+            if (tablaLeads) tablaLeads.innerHTML = `<tr><td colspan="7" class="p-10 text-center text-slate-400 italic">No hay registros para mostrar.</td></tr>`;
+            if (tablaDetallada) tablaDetallada.innerHTML = `<tr><td colspan="6" class="p-10 text-center text-slate-400 italic">No hay registros para mostrar.</td></tr>`;
+            return;
         }
 
+        lista.forEach((lead) => {
+            // --- TABLA PRINCIPAL ---
+            if (tablaLeads) {
+                let estadosHTML = '';
+                if (lead.es_calificado) estadosHTML += `<span class="bg-cyan-50 text-[#00B2FE] border border-cyan-200 text-[10px] font-black px-2 py-0.5 rounded-lg mr-1">Calificado</span>`;
+                if (lead.es_reunion) estadosHTML += `<span class="bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-black px-2 py-0.5 rounded-lg mr-1">Reunión</span>`;
+                if (lead.es_ganado) estadosHTML += `<span class="bg-emerald-50 text-[#00A88F] border border-emerald-200 text-[10px] font-black px-2 py-0.5 rounded-lg mr-1">Ganado</span>`;
+                if (!lead.es_calificado && !lead.es_reunion && !lead.es_ganado) estadosHTML = `<span class="text-xs text-slate-400 font-normal">Sin estado</span>`;
+
+                let badgeRedClass = 'bg-slate-100 text-[#051D2D]';
+                if (lead.red_contacto === 'Instagram') badgeRedClass = 'bg-pink-50 text-[#E1306C] border border-pink-100';
+                else if (lead.red_contacto === 'WhatsApp') badgeRedClass = 'bg-emerald-50 text-[#25D366] border border-emerald-100';
+                else if (lead.red_contacto === 'Facebook') badgeRedClass = 'bg-blue-50 text-[#1877F2] border border-blue-100';
+
+                const origenBadge = lead._origen === 'kommo'
+                    ? `<span class="text-[9px] font-black text-slate-300 uppercase">Kommo</span>`
+                    : `<span class="text-[9px] font-black text-slate-300 uppercase">Manual</span>`;
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50/80 transition-all border-b border-slate-100';
+                tr.innerHTML = `
+                    <td class="p-3.5 text-xs text-slate-500 font-medium">${formatearFechaLegible(lead.fecha_contacto)}</td>
+                    <td class="p-3.5 font-black text-[#051D2D]">${lead.telefono} ${origenBadge}</td>
+                    <td class="p-3.5 font-semibold">${lead.nombre}</td>
+                    <td class="p-3.5">
+                        <div class="flex flex-col gap-1">
+                            <span class="${badgeRedClass} text-[11px] px-2 py-0.5 rounded-md font-bold w-fit">${lead.red_contacto}</span>
+                            <span class="text-[10px] text-slate-400 font-medium">${lead.anuncio_proveniencia}</span>
+                        </div>
+                    </td>
+                    <td class="p-3.5">
+                        <div class="flex flex-col gap-0.5 text-xs">
+                            <span class="font-bold text-slate-700"><span class="text-slate-400 font-normal">ID:</span> ${lead.meta_id || 'N/A'}</span>
+                            <span class="text-[11px] text-slate-500"><span class="text-slate-400 font-normal">UTM:</span> ${lead.utm_content || 'N/A'}</span>
+                            <span class="text-[11px] text-slate-500"><span class="text-slate-400 font-normal">Camp:</span> ${lead.utm_campaign || 'N/A'}</span>
+                        </div>
+                    </td>
+                    <td class="p-3.5">${estadosHTML}</td>
+                    <td class="p-3.5 text-center">
+                        <div class="flex items-center justify-center gap-1">
+                            <button onclick="abrirModalEditar('${lead.id}')" title="Editar Lead" class="p-2 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-[#00B2FE] transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                            </button>
+                            <button onclick="eliminarLead('${lead.id}')" title="Eliminar Lead" class="p-2 hover:bg-red-50 rounded-xl text-slate-400 hover:text-red-500 transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tablaLeads.appendChild(tr);
+            }
+
+            // --- TABLA DETALLADA ---
+            if (tablaDetallada) {
+                const tr2 = document.createElement('tr');
+                tr2.className = 'hover:bg-slate-50/80 transition-all border-b border-slate-100 text-xs';
+                tr2.innerHTML = `
+                    <td class="p-3.5 text-slate-500 font-medium">${formatearFechaLegible(lead.fecha_contacto)}</td>
+                    <td class="p-3.5 font-black text-[#051D2D]">${lead.telefono}</td>
+                    <td class="p-3.5 font-semibold">${lead.nombre} / <span class="text-slate-400">${lead.ciudad_origen || 'N/A'}</span></td>
+                    <td class="p-3.5 text-slate-600">${lead.rubro || 'N/A'} / <span class="text-slate-400">${lead.anuncio_proveniencia || 'N/A'}</span></td>
+                    <td class="p-3.5 text-slate-500">${lead.hablo_problema || 'NO'}</td>
+                    <td class="p-3.5 text-slate-500">${lead.valoracion || 'Sin Valorar'}</td>
+                `;
+                tablaDetallada.appendChild(tr2);
+            }
+        });
+    }
+
+    function actualizarKPIs() {
+        const kpiTotal = document.getElementById('kpiTotal');
+        const kpiCalificados = document.getElementById('kpiCalificados');
+        const kpiGanados = document.getElementById('kpiGanados');
+        
+        if (kpiTotal) kpiTotal.textContent = leadsList.length;
+        if (kpiCalificados) kpiCalificados.textContent = leadsList.filter(l => l.es_calificado).length;
+        if (kpiGanados) kpiGanados.textContent = leadsList.filter(l => l.es_ganado).length;
+    }
+
+    function actualizarGrafico() {
+        const canvas = document.getElementById('chartCanales');
+        if (!canvas) return;
+        const counts = { Instagram: 0, WhatsApp: 0, Facebook: 0 };
+        leadsList.forEach(l => { if (counts[l.red_contacto] !== undefined) counts[l.red_contacto]++; });
+
+        const ctx = canvas.getContext('2d');
+        if (chartInstance) chartInstance.destroy();
+
+        chartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Instagram', 'WhatsApp', 'Facebook'],
+                datasets: [{
+                    data: [counts.Instagram, counts.WhatsApp, counts.Facebook],
+                    backgroundColor: ['#E1306C', '#25D366', '#1877F2'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                cutout: '70%',
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    }
+
+    // Control mutuo entre "Calificado" y "No Calificado"
+    const checkCalificado = document.getElementById('checkCalificado');
+    const checkNoCalificado = document.getElementById('checkNoCalificado');
+
+    if (checkCalificado && checkNoCalificado) {
+        checkCalificado.addEventListener('change', () => {
+            if (checkCalificado.checked) checkNoCalificado.checked = false;
+        });
+        checkNoCalificado.addEventListener('change', () => {
+            if (checkNoCalificado.checked) checkCalificado.checked = false;
+        });
+    }
+
+    if (form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
+
+            // Determina si es calificado: true (Calificado marcado), false (No Calificado marcado)
+            const isCalificado = checkCalificado ? checkCalificado.checked : false;
 
             const nuevoLead = {
                 id: 'manual-' + Date.now().toString(),
                 _origen: 'manual',
-                telefono: telefonoInput.value,
-                nombre: document.getElementById('nombre').value,
-                fecha_contacto: fechaHoraInput.value,
-                red_contacto: document.getElementById('redContacto').value || 'N/A',
-                anuncio_proveniencia: document.getElementById('anuncio').value || 'N/A',
-                meta_id: document.getElementById('metaId').value || 'N/A',
-                utm_content: document.getElementById('utmContent').value || 'N/A',
-                utm_campaign: document.getElementById('utmCampaign').value || 'N/A',
-                es_calificado: document.getElementById('checkCalificado').checked,
-                es_reunion: document.getElementById('checkReunion').checked,
-                es_ganado: document.getElementById('checkGanado').checked
+                telefono: telefonoInput ? telefonoInput.value : '',
+                nombre: document.getElementById('nombre') ? document.getElementById('nombre').value : '',
+                fecha_contacto: fechaHoraInput ? fechaHoraInput.value : '',
+                red_contacto: document.getElementById('redContacto') ? (document.getElementById('redContacto').value || 'N/A') : 'N/A',
+                anuncio_proveniencia: document.getElementById('anuncio') ? (document.getElementById('anuncio').value || 'N/A') : 'N/A',
+                meta_id: document.getElementById('metaId') ? (document.getElementById('metaId').value || 'N/A') : 'N/A',
+                utm_content: document.getElementById('utmContent') ? (document.getElementById('utmContent').value || 'N/A') : 'N/A',
+                utm_campaign: document.getElementById('utmCampaign') ? (document.getElementById('utmCampaign').value || 'N/A') : 'N/A',
+                es_calificado: isCalificado,
+                es_reunion: document.getElementById('checkReunion') ? document.getElementById('checkReunion').checked : false,
+                es_ganado: document.getElementById('checkGanado') ? document.getElementById('checkGanado').checked : false,
+                ciudad_origen: 'N/A',
+                rubro: 'N/A',
+                hablo_problema: 'NO',
+                valoracion: 'Sin Valorar'
             };
 
             const manualLeads = getManualLeads();
@@ -693,33 +729,36 @@
             mostrarToast("Lead guardado correctamente");
             cargarLeads();
         });
+    }
 
-        function abrirModalEditar(id) {
-            const lead = leadsList.find(l => l.id === id);
-            if (!lead) return;
+    function abrirModalEditar(id) {
+        const lead = leadsList.find(l => l.id === id);
+        if (!lead) return;
 
-            document.getElementById('editId').value = lead.id;
-            document.getElementById('editNombre').value = lead.nombre;
-            document.getElementById('editTelefono').value = lead.telefono;
-            document.getElementById('editMetaId').value = lead.meta_id !== 'N/A' ? lead.meta_id : '';
-            document.getElementById('editUtmContent').value = lead.utm_content !== 'N/A' ? lead.utm_content : '';
-            document.getElementById('editUtmCampaign').value = lead.utm_campaign !== 'N/A' ? lead.utm_campaign : '';
-            document.getElementById('editRedContacto').value = lead.red_contacto || 'N/A';
-            document.getElementById('editAnuncio').value = lead.anuncio_proveniencia || 'N/A';
-            document.getElementById('editCalificado').checked = lead.es_calificado;
-            document.getElementById('editReunion').checked = lead.es_reunion;
-            document.getElementById('editGanado').checked = lead.es_ganado;
+        document.getElementById('editId').value = lead.id;
+        document.getElementById('editNombre').value = lead.nombre;
+        document.getElementById('editTelefono').value = lead.telefono;
+        document.getElementById('editMetaId').value = lead.meta_id !== 'N/A' ? lead.meta_id : '';
+        document.getElementById('editUtmContent').value = lead.utm_content !== 'N/A' ? lead.utm_content : '';
+        document.getElementById('editUtmCampaign').value = lead.utm_campaign !== 'N/A' ? lead.utm_campaign : '';
+        document.getElementById('editRedContacto').value = lead.red_contacto || 'N/A';
+        document.getElementById('editAnuncio').value = lead.anuncio_proveniencia || 'N/A';
+        document.getElementById('editCalificado').checked = lead.es_calificado;
+        document.getElementById('editReunion').checked = lead.es_reunion;
+        document.getElementById('editGanado').checked = lead.es_ganado;
 
-            document.getElementById('editTelefono').disabled = (lead._origen === 'kommo');
+        document.getElementById('editTelefono').disabled = (lead._origen === 'kommo');
+        document.getElementById('modalEditar').classList.remove('hidden');
+    }
 
-            document.getElementById('modalEditar').classList.remove('hidden');
-        }
+    function cerrarModal() {
+        const modal = document.getElementById('modalEditar');
+        if (modal) modal.classList.add('hidden');
+    }
 
-        function cerrarModal() {
-            document.getElementById('modalEditar').classList.add('hidden');
-        }
-
-        document.getElementById('formEdit').addEventListener('submit', function(e) {
+    const formEdit = document.getElementById('formEdit');
+    if (formEdit) {
+        formEdit.addEventListener('submit', function(e) {
             e.preventDefault();
             const id = document.getElementById('editId').value;
             const lead = leadsList.find(l => l.id === id);
@@ -740,16 +779,7 @@
 
             if (lead._origen === 'kommo') {
                 const overrides = getOverrides();
-                overrides[lead.telefono] = {
-                    meta_id: datosEditados.meta_id,
-                    utm_content: datosEditados.utm_content,
-                    utm_campaign: datosEditados.utm_campaign,
-                    red_contacto: datosEditados.red_contacto,
-                    anuncio_proveniencia: datosEditados.anuncio_proveniencia,
-                    es_calificado: datosEditados.es_calificado,
-                    es_reunion: datosEditados.es_reunion,
-                    es_ganado: datosEditados.es_ganado
-                };
+                overrides[lead.telefono] = { ...overrides[lead.telefono], ...datosEditados };
                 setOverrides(overrides);
             } else {
                 const manualLeads = getManualLeads();
@@ -764,40 +794,46 @@
             mostrarToast("Registro actualizado");
             cargarLeads();
         });
+    }
 
-        function eliminarLead(id) {
-            const lead = leadsList.find(l => l.id === id);
-            if (!lead) return;
+    function eliminarLead(id) {
+        const lead = leadsList.find(l => l.id === id);
+        if (!lead) return;
 
-            if (lead._origen === 'kommo') {
-                const hidden = getHidden();
-                if (!hidden.includes(lead.telefono)) hidden.push(lead.telefono);
-                setHidden(hidden);
-                mostrarToast("Lead oculto (seguirá en Kommo, pero no en esta tabla)");
-            } else {
-                const manualLeads = getManualLeads().filter(l => l.id !== id);
-                setManualLeads(manualLeads);
-                mostrarToast("Lead eliminado");
-            }
-            cargarLeads();
+        if (lead._origen === 'kommo') {
+            const hidden = getHidden();
+            if (!hidden.includes(lead.telefono)) hidden.push(lead.telefono);
+            setHidden(hidden);
+            mostrarToast("Lead oculto (seguirá en Kommo, pero no en esta tabla)");
+        } else {
+            const manualLeads = getManualLeads().filter(l => l.id !== id);
+            setManualLeads(manualLeads);
+            mostrarToast("Lead eliminado");
         }
+        cargarLeads();
+    }
 
-        function filtrarEstado(estado) {
-            filtroActual = estado;
-            document.querySelectorAll('.btn-filtro').forEach(btn => {
-                btn.className = 'btn-filtro px-3 py-1.5 rounded-xl bg-slate-50 text-slate-400 hover:text-slate-600';
-            });
+    function filtrarEstado(estado) {
+        filtroActual = estado;
+        document.querySelectorAll('.btn-filtro').forEach(btn => {
+            btn.className = 'btn-filtro px-3 py-1.5 rounded-xl bg-slate-50 text-slate-400 hover:text-slate-600';
+        });
+        if (event && event.target) {
             event.target.className = 'btn-filtro px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-black';
-            aplicarFiltrosYRender();
         }
+        aplicarFiltrosYRender();
+    }
 
-        inputBuscar.addEventListener('input', aplicarFiltrosYRender);
+    if (inputBuscar) inputBuscar.addEventListener('input', aplicarFiltrosYRender);
 
+    if (btnRecargar) {
         btnRecargar.addEventListener('click', function() {
             mostrarToast("Recargando datos.json...");
             cargarLeads();
         });
+    }
 
+    if (btnExportar) {
         btnExportar.addEventListener('click', function() {
             if(leadsList.length === 0) return mostrarToast("No hay registros para exportar");
             let csvContent = "data:text/csv;charset=utf-8,Telefono,Nombre,Calificado,Reunion,Ganado,Anuncio,FechaContacto,MetaID,UTMContent,UTMCampaign,RedMeta\n";
@@ -813,8 +849,10 @@
             document.body.removeChild(link);
             mostrarToast("Reporte descargado correctamente");
         });
+    }
 
-        cargarLeads();
+    cargarLeads();
+</script>
     </script>
 </body>
 </html>
