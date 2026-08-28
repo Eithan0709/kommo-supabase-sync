@@ -25,32 +25,18 @@
                         linear-gradient(135deg, #00E6A5 0%, #00B2FE 100%) border-box;
             box-shadow: 0 0 12px rgba(0, 230, 165, 0.3);
         }
-
-        /* Hacer que las tablas tengan desplazamiento horizontal sin romper la maquetación */
-        .table-container {
-            overflow-x: auto;
-            width: 100%;
-        }
-
-        td, th {
-            white-space: nowrap;
-        }
-
-        span[class*="badge"], span[class*="rounded"] {
-            display: inline-block;
-            white-space: nowrap;
-        }
     </style>
 </head>
-<body class="bg-slate-50/70 text-[#051D2D] min-h-screen p-4 md:p-8 font-sans">
+<body class="bg-slate-50/70 text-[#051D2D] min-h-screen p-3 md:p-8 font-sans">
 
     <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-[#051D2D] text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-[#00E6A5]/40">
         <span class="w-2.5 h-2.5 bg-[#00E6A5] rounded-full animate-pulse"></span>
         <span id="toastMsg" class="text-xs font-bold">Notificación</span>
     </div>
 
-    <div id="modalEditar" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center hidden transition-all">
-        <div class="bg-white p-7 rounded-3xl glow-card w-full max-w-lg mx-4 space-y-4 shadow-2xl">
+    <!-- MODAL EDITAR -->
+    <div id="modalEditar" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center hidden transition-all p-4">
+        <div class="bg-white p-5 md:p-7 rounded-3xl glow-card w-full max-w-lg space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center pb-2 border-b border-slate-100">
                 <h3 class="text-lg font-black text-[#051D2D]">Editar Lead</h3>
                 <button onclick="cerrarModal()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
@@ -65,10 +51,10 @@
                     <label class="block text-xs font-black text-slate-500 uppercase">Teléfono</label>
                     <input type="text" id="editTelefono" required class="w-full p-2.5 border-2 border-slate-100 rounded-xl text-sm font-semibold glow-input">
                 </div>
-                <div class="grid grid-cols-3 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
                         <label class="block text-xs font-black text-slate-500 uppercase">Meta ID</label>
-                        <input type="text" id="editMetaId" placeholder="" class="w-full p-2.5 border-2 border-slate-100 rounded-xl text-sm font-semibold glow-input">
+                        <input type="text" id="editMetaId" class="w-full p-2.5 border-2 border-slate-100 rounded-xl text-sm font-semibold glow-input">
                     </div>
                     <div>
                         <label class="block text-xs font-black text-slate-500 uppercase">UTM Content</label>
@@ -76,10 +62,10 @@
                     </div>
                     <div>
                         <label class="block text-xs font-black text-slate-500 uppercase">UTM Campaign</label>
-                        <input type="text" id="editUtmCampaign" placeholder="" class="w-full p-2.5 border-2 border-slate-100 rounded-xl text-sm font-semibold glow-input">
+                        <input type="text" id="editUtmCampaign" class="w-full p-2.5 border-2 border-slate-100 rounded-xl text-sm font-semibold glow-input">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-black text-slate-500 uppercase">Red Contacto</label>
                         <select id="editRedContacto" class="w-full p-2.5 border-2 border-slate-100 rounded-xl text-sm font-semibold glow-input">
@@ -101,29 +87,26 @@
                     </div>
                 </div>
                 <div>
-                   <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Estados</label>
-<div class="flex flex-wrap gap-4 bg-slate-50 p-3 rounded-xl border border-slate-100 mb-4">
-    <label class="flex items-center gap-1 cursor-pointer text-xs font-bold text-slate-700">
-        <input type="checkbox" id="editCalificado" class="accent-[#00A88F]"> Calificado
-    </label>
-    <label class="flex items-center gap-1 cursor-pointer text-xs font-bold text-slate-700">
-        <input type="checkbox" id="editReunion" class="accent-[#00A88F]"> Reunión
-    </label>
-    <label class="flex items-center gap-1 cursor-pointer text-xs font-bold text-slate-700">
-        <input type="checkbox" id="editGanado" class="accent-[#00A88F]"> Ganado
-    </label>
-    <label class="flex items-center gap-1 cursor-pointer text-xs font-bold text-rose-600">
-        <input type="checkbox" id="editNoCalificado" class="accent-rose-500"> No Calificado
-    </label>
-</div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Estados</label>
+                    <div class="flex flex-wrap gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100 mb-4">
+                        <label class="flex items-center gap-1 cursor-pointer text-xs font-bold text-slate-700">
+                            <input type="checkbox" id="editCalificado" class="accent-[#00A88F]"> Calificado
+                        </label>
+                        <label class="flex items-center gap-1 cursor-pointer text-xs font-bold text-slate-700">
+                            <input type="checkbox" id="editReunion" class="accent-[#00A88F]"> Reunión
+                        </label>
+                        <label class="flex items-center gap-1 cursor-pointer text-xs font-bold text-slate-700">
+                            <input type="checkbox" id="editGanado" class="accent-[#00A88F]"> Ganado
+                        </label>
+                        <label class="flex items-center gap-1 cursor-pointer text-xs font-bold text-rose-600">
+                            <input type="checkbox" id="editNoCalificado" class="accent-rose-500"> No Calificado
+                        </label>
+                    </div>
 
-<!-- NOTAS GENERALES -->
-<div class="col-span-full mb-4">
-    <label for="editNotasLead" class="block text-xs font-bold text-slate-500 uppercase mb-1">
-        Notas del Lead
-    </label>
-    <textarea id="editNotasLead" rows="3" placeholder="Escribe observaciones o detalles del seguimiento..." class="w-full text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#00B2FE] bg-slate-50/50 text-slate-700 resize-none"></textarea>
-</div>
+                    <div class="col-span-full mb-4">
+                        <label for="editNotasLead" class="block text-xs font-bold text-slate-500 uppercase mb-1">Notas del Lead</label>
+                        <textarea id="editNotasLead" rows="3" placeholder="Escribe observaciones..." class="w-full text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#00B2FE] bg-slate-50/50 text-slate-700 resize-none"></textarea>
+                    </div>
                 </div>
                 <div class="flex justify-end gap-2 pt-3">
                     <button type="button" onclick="cerrarModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold text-xs">Cancelar</button>
@@ -133,168 +116,158 @@
         </div>
     </div>
 
-    <header class="max-w-7xl mx-auto bg-white/90 backdrop-blur-md glow-card p-6 rounded-3xl mb-8 flex justify-between items-center">
-    <div class="flex items-center gap-5">
-        
-        <!-- LOGO MÁS GRANDE -->
-        <img src="Isaac-Jacob.png" alt="Isaac Jacob" class="h-16 md:h-20 w-auto object-contain">
-
-        <!-- TÍTULO Y SUBTÍTULO ABAJO -->
-        <div>
-            <h1 class="text-2xl md:text-3xl font-black tracking-tight text-[#051D2D]">
-                Isaac Jacob <span class="text-gradient">Image & Technology</span>
-            </h1>
-            <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mt-1">
-                SyncKommo Flow · <span id="estadoSync">cargando datos.json...</span>
-            </p>
+    <!-- ENCABEZADO RESPONSIVO -->
+    <header class="max-w-7xl mx-auto bg-white/90 backdrop-blur-md glow-card p-4 md:p-6 rounded-3xl mb-6 md:mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="flex flex-col sm:flex-row items-center text-center sm:text-left gap-3 md:gap-5">
+            <img src="Isaac-Jacob.png" alt="Isaac Jacob" class="h-12 md:h-16 w-auto object-contain">
+            <div>
+                <h1 class="text-xl md:text-3xl font-black tracking-tight text-[#051D2D]">
+                    Isaac Jacob <span class="text-gradient">Image & Technology</span>
+                </h1>
+                <p class="text-[10px] md:text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">
+                    SyncKommo Flow · <span id="estadoSync">cargando datos.json...</span>
+                </p>
+            </div>
         </div>
 
-    </div>
+        <div class="flex items-center gap-3 w-full md:w-auto justify-center">
+            <button id="btnRecargar" class="flex items-center justify-center gap-2 bg-cyan-50 hover:bg-cyan-100 text-[#00B2FE] border border-cyan-200 text-xs font-black px-4 py-2.5 rounded-2xl transition-all active:scale-95 flex-1 md:flex-initial">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                Recargar
+            </button>
+            <button id="btnExportar" class="flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-[#00A88F] border border-emerald-200 text-xs font-black px-4 py-2.5 rounded-2xl transition-all active:scale-95 flex-1 md:flex-initial">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Descargar
+            </button>
+        </div>
+    </header>
 
-    <!-- BOTONES -->
-    <div class="flex items-center gap-3">
-        <button id="btnRecargar" class="hidden md:flex items-center gap-2 bg-cyan-50 hover:bg-cyan-100 text-[#00B2FE] border border-cyan-200 text-xs font-black px-4 py-2.5 rounded-2xl transition-all active:scale-95">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-            Recargar datos.json
-        </button>
-        <button id="btnExportar" class="hidden md:flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-[#00A88F] border border-emerald-200 text-xs font-black px-4 py-2.5 rounded-2xl transition-all active:scale-95">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            Descargar
-        </button>
-    </div>
-</header>
+    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
 
-    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-        <section class="lg:col-span-4 bg-white p-7 rounded-3xl glow-card h-fit relative overflow-hidden">
-            <div class="mb-6 pb-4 border-b border-slate-100 flex items-center justify-between">
-                <h2 class="text-xl font-black text-[#051D2D] flex items-center gap-2">
+        <!-- FORMULARIO -->
+        <section class="lg:col-span-4 bg-white p-5 md:p-7 rounded-3xl glow-card h-fit relative overflow-hidden">
+            <div class="mb-5 pb-3 border-b border-slate-100 flex items-center justify-between">
+                <h2 class="text-lg md:text-xl font-black text-[#051D2D] flex items-center gap-2">
                     <span class="w-2.5 h-2.5 bg-[#00E6A5] rounded-full"></span>
                     Registrar Nuevo Lead
                 </h2>
             </div>
 
             <form id="leadForm" class="space-y-4">
-    <div>
-        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Teléfono *</label>
-        <input type="text" id="telefono" required placeholder="+506 8888 8888" maxlength="15" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
-    </div>
+                <div>
+                    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">Teléfono *</label>
+                    <input type="text" id="telefono" required placeholder="+506 8888 8888" maxlength="15" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+                </div>
 
-    <div>
-        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Nombre del Cliente *</label>
-        <input type="text" id="nombre" required class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
-    </div>
+                <div>
+                    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">Nombre del Cliente *</label>
+                    <input type="text" id="nombre" required class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+                </div>
 
-    <div>
-        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Estado del Lead</label>
-        <!-- flex-wrap añadido para evitar desbordes y justificación adaptable -->
-        <div class="bg-gradient-to-r from-slate-50 to-slate-100/80 p-2.5 rounded-2xl border-2 border-slate-100 flex flex-wrap items-center justify-between gap-2 text-[11px]">
-            <label class="flex items-center gap-1 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition-colors whitespace-nowrap">
-                <input type="checkbox" id="checkCalificado" class="w-3.5 h-3.5 accent-[#00A88F] rounded cursor-pointer"> Calificado
-            </label>
-            <label class="flex items-center gap-1 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition-colors whitespace-nowrap">
-                <input type="checkbox" id="checkReunion" class="w-3.5 h-3.5 accent-[#00A88F] rounded cursor-pointer"> Reunión
-            </label>
-            <label class="flex items-center gap-1 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition-colors whitespace-nowrap">
-                <input type="checkbox" id="checkGanado" class="w-3.5 h-3.5 accent-[#00A88F] rounded cursor-pointer"> Ganado
-            </label>
-            <label class="flex items-center gap-1 cursor-pointer text-rose-600 font-medium whitespace-nowrap">
-                <input type="checkbox" id="noCalificado" class="w-3.5 h-3.5 accent-rose-500 rounded cursor-pointer"> No Calificado
-            </label>
-        </div>
-    </div>
+                <div>
+                    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">Estado del Lead</label>
+                    <div class="bg-gradient-to-r from-slate-50 to-slate-100/80 p-3 rounded-2xl border-2 border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <label class="flex items-center gap-1.5 cursor-pointer text-[#051D2D] font-semibold">
+                            <input type="checkbox" id="checkCalificado" class="w-4 h-4 accent-[#00A88F] rounded"> Calificado
+                        </label>
+                        <label class="flex items-center gap-1.5 cursor-pointer text-[#051D2D] font-semibold">
+                            <input type="checkbox" id="checkReunion" class="w-4 h-4 accent-[#00A88F] rounded"> Reunión
+                        </label>
+                        <label class="flex items-center gap-1.5 cursor-pointer text-[#051D2D] font-semibold">
+                            <input type="checkbox" id="checkGanado" class="w-4 h-4 accent-[#00A88F] rounded"> Ganado
+                        </label>
+                        <label class="flex items-center gap-1.5 cursor-pointer text-rose-600 font-semibold">
+                            <input type="checkbox" id="noCalificado" class="w-4 h-4 accent-rose-500 rounded"> No Calificado
+                        </label>
+                    </div>
+                </div>
 
-    <div>
-        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Fecha y Hora de Contacto</label>
-        <input type="datetime-local" id="fechaHora" step="1" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
-    </div>
+                <div>
+                    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">Fecha y Hora de Contacto</label>
+                    <input type="datetime-local" id="fechaHora" step="1" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+                </div>
 
-    <!-- Usamos grid estricto con style inline si la clase CSS sigue teniendo conflictos -->
-    <div class="grid gap-3" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
-        <div>
-            <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Red Contacto</label>
-            <select id="redContacto" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all cursor-pointer">
-                <option value="" disabled selected>Seleccionar...</option>
-                <option value="Instagram">Instagram</option>
-                <option value="WhatsApp">WhatsApp</option>
-                <option value="Facebook">Facebook</option>
-            </select>
-        </div>
-        <div>
-            <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Anuncio Proveniencia</label>
-            <select id="anuncio" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all cursor-pointer">
-                <option value="" disabled selected>Seleccionar...</option>
-                <option value="Reel">Reel</option>
-                <option value="Post">Post</option>
-                <option value="Anuncio">Anuncio</option>
-                <option value="Historias">Historias</option>
-            </select>
-        </div>
-    </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">Red Contacto</label>
+                        <select id="redContacto" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all cursor-pointer">
+                            <option value="" disabled selected>Seleccionar...</option>
+                            <option value="Instagram">Instagram</option>
+                            <option value="WhatsApp">WhatsApp</option>
+                            <option value="Facebook">Facebook</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">Anuncio Proveniencia</label>
+                        <select id="anuncio" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all cursor-pointer">
+                            <option value="" disabled selected>Seleccionar...</option>
+                            <option value="Reel">Reel</option>
+                            <option value="Post">Post</option>
+                            <option value="Anuncio">Anuncio</option>
+                            <option value="Historias">Historias</option>
+                        </select>
+                    </div>
+                </div>
 
-    <div class="grid gap-3" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
-        <div>
-            <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Meta ID</label>
-            <input type="text" id="metaId" placeholder="" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
-        </div>
-        <div>
-            <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">UTM Content</label>
-            <input type="text" id="utmContent" placeholder="Ej: promo1" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
-        </div>
-        <div>
-            <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">UTM Campaign</label>
-            <input type="text" id="utmCampaign" placeholder="" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
-        </div>
-    </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">Meta ID</label>
+                        <input type="text" id="metaId" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">UTM Content</label>
+                        <input type="text" id="utmContent" placeholder="Ej: promo1" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">UTM Campaign</label>
+                        <input type="text" id="utmCampaign" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+                    </div>
+                </div>
 
-    <div class="flex gap-3 pt-3">
-        <button type="submit" id="btnSubmit" class="flex-1 bg-brand-gradient hover:opacity-95 text-white font-black py-3 rounded-2xl transition-all shadow-lg shadow-[#00E6A5]/30 active:scale-[0.98]">
-            Guardar Lead
-        </button>
-        <button type="button" id="btnLimpiar" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-4 py-3 rounded-2xl transition-all active:scale-[0.98]">
-            Limpiar
-        </button>
-    </div>
-</form>
+                <div class="flex gap-3 pt-2">
+                    <button type="submit" id="btnSubmit" class="flex-1 bg-brand-gradient hover:opacity-95 text-white font-black py-3 rounded-2xl transition-all shadow-lg shadow-[#00E6A5]/30 active:scale-[0.98]">
+                        Guardar Lead
+                    </button>
+                    <button type="button" id="btnLimpiar" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-4 py-3 rounded-2xl transition-all active:scale-[0.98]">
+                        Limpiar
+                    </button>
+                </div>
+            </form>
         </section>
 
+        <!-- SECCIÓN DERECHA: KPIS, GRÁFICO Y TABLAS -->
         <section class="lg:col-span-8 space-y-6">
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-    <!-- TOTAL LEADS -->
-    <div class="bg-white p-4 rounded-2xl glow-card text-center">
-        <span class="block text-xs font-bold text-slate-400 uppercase">Total Leads</span>
-        <span id="kpiTotal" class="text-2xl font-black text-[#051D2D]">0</span>
-    </div>
+            <!-- KPIS -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+                <div class="bg-white p-3.5 md:p-4 rounded-2xl glow-card text-center">
+                    <span class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase">Total Leads</span>
+                    <span id="kpiTotal" class="text-xl md:text-2xl font-black text-[#051D2D]">0</span>
+                </div>
+                <div class="bg-white p-3.5 md:p-4 rounded-2xl glow-card text-center">
+                    <span class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase">Calificados</span>
+                    <span id="kpiCalificados" class="text-xl md:text-2xl font-black text-[#00B2FE]">0</span>
+                </div>
+                <div class="bg-white p-3.5 md:p-4 rounded-2xl glow-card text-center">
+                    <span class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase">Ganados</span>
+                    <span id="kpiGanados" class="text-xl md:text-2xl font-black text-[#00A88F]">0</span>
+                </div>
+                <div class="bg-white p-3.5 md:p-4 rounded-2xl glow-card text-center">
+                    <span class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase">No Calificados</span>
+                    <span id="kpiNoCalificados" class="text-xl md:text-2xl font-black text-rose-500">0</span>
+                </div>
+            </div>
 
-    <!-- CALIFICADOS -->
-    <div class="bg-white p-4 rounded-2xl glow-card text-center">
-        <span class="block text-xs font-bold text-slate-400 uppercase">Calificados</span>
-        <span id="kpiCalificados" class="text-2xl font-black text-[#00B2FE]">0</span>
-    </div>
-
-    <!-- GANADOS -->
-    <div class="bg-white p-4 rounded-2xl glow-card text-center">
-        <span class="block text-xs font-bold text-slate-400 uppercase">Ganados</span>
-        <span id="kpiGanados" class="text-2xl font-black text-[#00A88F]">0</span>
-    </div>
-
-    <!-- NO CALIFICADOS -->
-    <div class="bg-white p-4 rounded-2xl glow-card text-center">
-        <span class="block text-xs font-bold text-slate-400 uppercase">No Calificados</span>
-        <span id="kpiNoCalificados" class="text-2xl font-black text-rose-500">0</span>
-    </div>
-</div>
-
-            <div class="bg-white p-5 rounded-3xl glow-card flex items-center justify-between gap-6">
-                <div class="w-full max-w-[180px] h-[120px]">
+            <!-- GRÁFICO DE DISTRIBUCIÓN -->
+            <div class="bg-white p-5 rounded-3xl glow-card flex flex-col sm:flex-row items-center justify-between gap-4 md:gap-6">
+                <div class="w-full max-w-[160px] h-[120px]">
                     <canvas id="chartCanales"></canvas>
                 </div>
-                <div class="flex-1 space-y-2">
+                <div class="flex-1 text-center sm:text-left space-y-1">
                     <h4 class="text-xs font-black uppercase text-slate-400 tracking-wider">Distribución por Canal</h4>
-                    <p class="text-xs text-slate-600 font-medium">Visualiza rápidamente desde qué redes sociales están llegando las consultas principales.</p>
+                    <p class="text-xs text-slate-600 font-medium">Visualiza rápidamente desde qué redes sociales llegan los contactos.</p>
 
-                    <div class="flex flex-wrap gap-3 pt-1 text-xs font-bold">
+                    <div class="flex flex-wrap justify-center sm:justify-start gap-3 pt-2 text-xs font-bold">
                         <div class="flex items-center gap-1.5">
                             <span class="w-2.5 h-2.5 rounded-full bg-[#E1306C]"></span>
                             <span class="text-slate-700">Instagram</span>
@@ -311,9 +284,10 @@
                 </div>
             </div>
 
-            <div class="bg-white p-7 rounded-3xl glow-card relative overflow-hidden space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-                    <h2 class="text-xl font-black text-[#051D2D] flex items-center gap-2">
+            <!-- TABLA 1: REGISTROS GUARDADOS -->
+            <div class="bg-white p-4 md:p-7 rounded-3xl glow-card relative overflow-hidden space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                    <h2 class="text-lg md:text-xl font-black text-[#051D2D] flex items-center gap-2">
                         <span class="w-2.5 h-2.5 bg-[#00B2FE] rounded-full"></span>
                         Registros Guardados
                     </h2>
@@ -326,67 +300,70 @@
                     </div>
                 </div>
 
-                <div class="flex gap-2 border-b border-slate-100 pb-3 overflow-x-auto text-xs font-bold">
+                <div class="flex gap-2 border-b border-slate-100 pb-3 overflow-x-auto text-xs font-bold whitespace-nowrap">
                     <button onclick="filtrarEstado('todos')" class="btn-filtro px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 active-filtro">Todos</button>
                     <button onclick="filtrarEstado('calificados')" class="btn-filtro px-3 py-1.5 rounded-xl bg-slate-50 text-slate-400 hover:text-slate-600">Calificados</button>
                     <button onclick="filtrarEstado('reunion')" class="btn-filtro px-3 py-1.5 rounded-xl bg-slate-50 text-slate-400 hover:text-slate-600">Reunión</button>
                     <button onclick="filtrarEstado('ganados')" class="btn-filtro px-3 py-1.5 rounded-xl bg-slate-50 text-slate-400 hover:text-slate-600">Ganados</button>
                 </div>
 
-               <div class="overflow-hidden rounded-2xl border-2 border-slate-100 shadow-sm">
-    <table class="w-full text-left text-sm table-fixed">
-                        <thead class="bg-gradient-to-r from-[#051D2D] to-[#0a2f47] text-white font-black text-xs uppercase tracking-wider">
-                        <tr>
-    <th class="p-3 w-[15%]">Fecha / Hora</th>
-    <th class="p-3 w-[14%]">Teléfono</th>
-    <th class="p-3 w-[14%]">Nombre</th>
-    <th class="p-3 w-[12%]">Red / Anuncio</th>
-    <th class="p-3 w-[18%]">Meta ID / UTM / Campaign</th>
-    <th class="p-3 w-[17%]">Estados</th>
-    <th class="p-3 w-[10%] text-center">Acciones</th>
-</tr>
+                <!-- CONTENEDOR CON SCROLL HORIZONTAL PARA CELULAR -->
+                <div class="overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm">
+                    <table class="w-full text-left text-xs md:text-sm whitespace-nowrap">
+                        <thead class="bg-gradient-to-r from-[#051D2D] to-[#0a2f47] text-white font-black uppercase tracking-wider">
+                            <tr>
+                                <th class="p-3">Fecha / Hora</th>
+                                <th class="p-3">Teléfono</th>
+                                <th class="p-3">Nombre</th>
+                                <th class="p-3">Red / Anuncio</th>
+                                <th class="p-3">Meta ID / UTM / Campaign</th>
+                                <th class="p-3">Estados</th>
+                                <th class="p-3 text-center">Acciones</th>
+                            </tr>
                         </thead>
                         <tbody id="tablaLeads" class="divide-y divide-slate-100 text-slate-700 bg-white font-semibold">
                         </tbody>
                     </table>
                 </div>
             </div>
-        
 
-        <!-- SEGUNDA TABLA: REGISTRO DETALLADO DE LEADS (EXCEL / KOMMO) -->
-<section class="bg-white p-7 rounded-3xl glow-card relative overflow-hidden space-y-4 mt-8">
-    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-        <h2 class="text-xl font-black text-[#051D2D] flex items-center gap-2">
-            <span class="w-2.5 h-2.5 bg-[#00E6A5] rounded-full"></span>
-            Análisis Detallado de Leads (Registro Extendido)
-        </h2>
+            <!-- TABLA 2: ANÁLISIS DETALLADO -->
+            <div class="bg-white p-4 md:p-7 rounded-3xl glow-card relative overflow-hidden space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                    <h2 class="text-lg md:text-xl font-black text-[#051D2D] flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 bg-[#00E6A5] rounded-full"></span>
+                        Análisis Detallado de Leads
+                    </h2>
 
-        <div class="relative w-full sm:w-64">
-            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <div class="relative w-full sm:w-64">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <input type="text" id="inputBuscarExcel" placeholder="Buscar cliente, rubro, ciudad..." class="p-2.5 pl-10 pr-4 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-xs font-semibold text-[#051D2D] focus:outline-none glow-input transition-all w-full">
+                    </div>
+                </div>
+
+                <!-- CONTENEDOR CON SCROLL HORIZONTAL PARA CELULAR -->
+                <div class="overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm">
+                    <table class="w-full text-left text-xs md:text-sm whitespace-nowrap">
+                        <thead class="bg-gradient-to-r from-[#051D2D] to-[#0a2f47] text-white font-black uppercase tracking-wider">
+                            <tr>
+                                <th class="p-3">Fecha / Horario</th>
+                                <th class="p-3">Teléfono</th>
+                                <th class="p-3">Cliente / Ciudad</th>
+                                <th class="p-3">Rubro / Anuncio</th>
+                                <th class="p-3">¿Habló Problema?</th>
+                                <th class="p-3">Valoración</th>
+                                <th class="p-3 text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaLeadsExcel" class="divide-y divide-slate-100 text-slate-700 bg-white font-semibold">
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <input type="text" id="inputBuscarExcel" placeholder="Buscar por cliente, rubro, ciudad..." class="p-2.5 pl-10 pr-4 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-xs font-semibold text-[#051D2D] focus:outline-none glow-input transition-all w-full">
-        </div>
-    </div>
 
-    <div class="overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm">
-        <table class="w-full text-left text-sm">
-            <thead class="bg-gradient-to-r from-[#051D2D] to-[#0a2f47] text-white font-black text-xs uppercase tracking-wider">
-                <tr>
-                    <th class="p-3.5">Fecha / Horario</th>
-                    <th class="p-3.5">Teléfono</th>
-                    <th class="p-3.5">Cliente / Ciudad</th>
-                    <th class="p-3.5">Rubro / Anuncio</th>
-                    <th class="p-3.5">¿Habló Problema?</th>
-                    <th class="p-3.5">Valoración</th>
-                    <th class="p-3.5 text-center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="tablaLeadsExcel" class="divide-y divide-slate-100 text-slate-700 bg-white font-semibold">
-            </tbody>
-        </table>
-    </div>
-</section>
+        </section>
 
     </main>
 
