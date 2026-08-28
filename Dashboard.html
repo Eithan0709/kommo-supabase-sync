@@ -858,17 +858,23 @@
     if (btnExportar) {
         btnExportar.addEventListener('click', function() {
             if(leadsList.length === 0) return mostrarToast("No hay registros para exportar");
-            let csvContent = "data:text/csv;charset=utf-8,Telefono,Nombre,Calificado,Reunion,Ganado,Anuncio,FechaContacto,MetaID,UTMContent,UTMCampaign,RedMeta\n";
+            
+            let csvContent = "\uFEFFTelefono;Nombre;Calificado;Reunión;Ganado;Anuncio;FechaContacto;MetaID;UTMContent;UTMCampaign;RedMeta\n";
+            
             leadsList.forEach(l => {
-                csvContent += `"${l.telefono}","${l.nombre}",${l.es_calificado},${l.es_reunion},${l.es_ganado},"${l.anuncio_proveniencia}","${l.fecha_contacto}","${l.meta_id}","${l.utm_content}","${l.utm_campaign}","${l.red_contacto}"\n`;
+                csvContent += `"${l.telefono}";"${l.nombre}";${l.es_calificado};${l.es_reunion};${l.es_ganado};"${l.anuncio_proveniencia}";"${l.fecha_contacto}";"${l.meta_id}";"${l.utm_content}";"${l.utm_campaign}";"${l.red_contacto}"\n`;
             });
-            const encodedUri = encodeURI(csvContent);
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
+            link.setAttribute("href", url);
             link.setAttribute("download", `Reporte_Leads_${Date.now()}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
             mostrarToast("Reporte descargado correctamente");
         });
     }
@@ -897,6 +903,5 @@
 
     cargarLeads();
 </script>
-    </script>
 </body>
 </html>
