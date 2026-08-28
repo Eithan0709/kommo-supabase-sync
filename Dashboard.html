@@ -139,12 +139,29 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-500 uppercase mb-1">Estados</label>
-                    <div class="flex gap-4 text-xs font-bold bg-slate-50 p-3 rounded-xl border border-slate-100">
-                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="editCalificado" class="accent-[#00A88F]"> Calificado</label>
-                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="editReunion" class="accent-[#00A88F]"> Reunión</label>
-                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="editGanado" class="accent-[#00A88F]"> Ganado</label>
-                    </div>
+                   <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Estados</label>
+<div class="flex flex-wrap gap-4 bg-slate-50 p-3 rounded-xl border border-slate-100 mb-4">
+    <label class="flex items-center gap-1 cursor-pointer text-xs font-bold text-slate-700">
+        <input type="checkbox" id="editCalificado" class="accent-[#00A88F]"> Calificado
+    </label>
+    <label class="flex items-center gap-1 cursor-pointer text-xs font-bold text-slate-700">
+        <input type="checkbox" id="editReunion" class="accent-[#00A88F]"> Reunión
+    </label>
+    <label class="flex items-center gap-1 cursor-pointer text-xs font-bold text-slate-700">
+        <input type="checkbox" id="editGanado" class="accent-[#00A88F]"> Ganado
+    </label>
+    <label class="flex items-center gap-1 cursor-pointer text-xs font-bold text-rose-600">
+        <input type="checkbox" id="editNoCalificado" class="accent-rose-500"> No Calificado
+    </label>
+</div>
+
+<!-- NOTAS GENERALES -->
+<div class="col-span-full mb-4">
+    <label for="editNotasLead" class="block text-xs font-bold text-slate-500 uppercase mb-1">
+        Notas del Lead
+    </label>
+    <textarea id="editNotasLead" rows="3" placeholder="Escribe observaciones o detalles del seguimiento..." class="w-full text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#00B2FE] bg-slate-50/50 text-slate-700 resize-none"></textarea>
+</div>
                 </div>
                 <div class="flex justify-end gap-2 pt-3">
                     <button type="button" onclick="cerrarModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold text-xs">Cancelar</button>
@@ -206,31 +223,30 @@
                     <input type="text" id="nombre" required class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
                 </div>
 
-                <div>
-                    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Estado del Lead</label>
-                    <div class="bg-gradient-to-r from-slate-50 to-slate-100/80 p-3 rounded-2xl border-2 border-slate-100 flex justify-between text-xs font-bold gap-1">
-                        <label class="flex items-center gap-1.5 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition">
-                            <input type="checkbox" id="checkCalificado" class="w-4 h-4 accent-[#00A88F] rounded-md cursor-pointer"> Calificado
-                        </label>
-                        <label class="flex items-center gap-1.5 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition">
-                            <input type="checkbox" id="checkReunion" class="w-4 h-4 accent-[#00A88F] rounded-md cursor-pointer"> Reunión
-                        </label>
-                        <label class="flex items-center gap-1.5 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition">
-                            <input type="checkbox" id="checkGanado" class="w-4 h-4 accent-[#00A88F] rounded-md cursor-pointer"> Ganado
-                        </label>
-                        <label class="flex items-center gap-1 cursor-pointer text-rose-600 font-medium">
-            <input type="checkbox" id="noCalificado" class="accent-rose-500" onchange="document.getElementById('contenedorNotaRegistro').classList.toggle('hidden', !this.checked)"> No Calificado
+<div>
+    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Estado del Lead</label>
+    <div class="bg-gradient-to-r from-slate-50 to-slate-100/80 p-2.5 rounded-2xl border-2 border-slate-100 flex items-center justify-between gap-1 text-[11px]">
+        <label class="flex items-center gap-1 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition-colors whitespace-nowrap">
+            <input type="checkbox" id="checkCalificado" class="w-3.5 h-3.5 accent-[#00A88F] rounded cursor-pointer"> Calificado
+        </label>
+        <label class="flex items-center gap-1 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition-colors whitespace-nowrap">
+            <input type="checkbox" id="checkReunion" class="w-3.5 h-3.5 accent-[#00A88F] rounded cursor-pointer"> Reunión
+        </label>
+        <label class="flex items-center gap-1 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition-colors whitespace-nowrap">
+            <input type="checkbox" id="checkGanado" class="w-3.5 h-3.5 accent-[#00A88F] rounded cursor-pointer"> Ganado
+        </label>
+        <label class="flex items-center gap-1 cursor-pointer text-rose-600 font-medium whitespace-nowrap">
+            <input type="checkbox" id="noCalificado" class="w-3.5 h-3.5 accent-rose-500 rounded cursor-pointer"> No Calificado
         </label>
     </div>
-                    </div>
-                    <!-- CAMPO DE NOTA DE DESCALIFICACIÓN (REGISTRO) -->
-<div id="contenedorNotaRegistro" class="hidden col-span-full mt-2">
-    <label for="notaNoCalificado" class="block text-xs font-bold text-rose-500 uppercase mb-1">
-        Motivo por el cual no calificó
-    </label>
-    <textarea id="notaNoCalificado" rows="2" placeholder="Ej: Presupuesto insuficiente, número equivocado..." class="w-full text-xs p-2.5 rounded-xl border border-rose-200 focus:outline-none focus:border-rose-400 bg-rose-50/30"></textarea>
 </div>
-                </div>
+
+<!-- CAMPO DE NOTAS GENERALES -->
+<div class="mt-2">
+    <label for="notaLead" class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">
+       
+    </label>
+    
 
                 <div>
                     <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Fecha y Hora de Contacto</label>
@@ -287,20 +303,31 @@
 
         <section class="lg:col-span-8 space-y-6">
 
-            <div class="grid grid-cols-3 gap-4">
-                <div class="bg-white p-4 rounded-2xl glow-card text-center">
-                    <span class="block text-xs font-bold text-slate-400 uppercase">Total Leads</span>
-                    <span id="kpiTotal" class="text-2xl font-black text-[#051D2D]">0</span>
-                </div>
-                <div class="bg-white p-4 rounded-2xl glow-card text-center">
-                    <span class="block text-xs font-bold text-slate-400 uppercase">Calificados</span>
-                    <span id="kpiCalificados" class="text-2xl font-black text-[#00B2FE]">0</span>
-                </div>
-                <div class="bg-white p-4 rounded-2xl glow-card text-center">
-                    <span class="block text-xs font-bold text-slate-400 uppercase">Ganados</span>
-                    <span id="kpiGanados" class="text-2xl font-black text-[#00A88F]">0</span>
-                </div>
-            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <!-- TOTAL LEADS -->
+    <div class="bg-white p-4 rounded-2xl glow-card text-center">
+        <span class="block text-xs font-bold text-slate-400 uppercase">Total Leads</span>
+        <span id="kpiTotal" class="text-2xl font-black text-[#051D2D]">0</span>
+    </div>
+
+    <!-- CALIFICADOS -->
+    <div class="bg-white p-4 rounded-2xl glow-card text-center">
+        <span class="block text-xs font-bold text-slate-400 uppercase">Calificados</span>
+        <span id="kpiCalificados" class="text-2xl font-black text-[#00B2FE]">0</span>
+    </div>
+
+    <!-- GANADOS -->
+    <div class="bg-white p-4 rounded-2xl glow-card text-center">
+        <span class="block text-xs font-bold text-slate-400 uppercase">Ganados</span>
+        <span id="kpiGanados" class="text-2xl font-black text-[#00A88F]">0</span>
+    </div>
+
+    <!-- NO CALIFICADOS -->
+    <div class="bg-white p-4 rounded-2xl glow-card text-center">
+        <span class="block text-xs font-bold text-slate-400 uppercase">No Calificados</span>
+        <span id="kpiNoCalificados" class="text-2xl font-black text-rose-500">0</span>
+    </div>
+</div>
 
             <div class="bg-white p-5 rounded-3xl glow-card flex items-center justify-between gap-6">
                 <div class="w-full max-w-[180px] h-[120px]">
@@ -349,18 +376,18 @@
                     <button onclick="filtrarEstado('ganados')" class="btn-filtro px-3 py-1.5 rounded-xl bg-slate-50 text-slate-400 hover:text-slate-600">Ganados</button>
                 </div>
 
-                <div class="overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm">
-                    <table class="w-full text-left text-sm">
+               <div class="overflow-hidden rounded-2xl border-2 border-slate-100 shadow-sm">
+    <table class="w-full text-left text-sm table-fixed">
                         <thead class="bg-gradient-to-r from-[#051D2D] to-[#0a2f47] text-white font-black text-xs uppercase tracking-wider">
-                            <tr>
-                                <th class="p-3.5">Fecha / Hora</th>
-                                <th class="p-3.5">Teléfono</th>
-                                <th class="p-3.5">Nombre</th>
-                                <th class="p-3.5">Red / Anuncio</th>
-                                <th class="p-3.5">Meta ID / UTM / Campaign</th>
-                                <th class="p-3.5">Estados</th>
-                                <th class="p-3.5 text-center">Acciones</th>
-                            </tr>
+                        <tr>
+    <th class="p-3 w-[15%]">Fecha / Hora</th>
+    <th class="p-3 w-[14%]">Teléfono</th>
+    <th class="p-3 w-[14%]">Nombre</th>
+    <th class="p-3 w-[12%]">Red / Anuncio</th>
+    <th class="p-3 w-[18%]">Meta ID / UTM / Campaign</th>
+    <th class="p-3 w-[17%]">Estados</th>
+    <th class="p-3 w-[10%] text-center">Acciones</th>
+</tr>
                         </thead>
                         <tbody id="tablaLeads" class="divide-y divide-slate-100 text-slate-700 bg-white font-semibold">
                         </tbody>
