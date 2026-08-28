@@ -189,10 +189,11 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
     <div class="grid grid-cols-2 gap-3">
-    <!-- Red Contacto -->
+    <!-- FILA 1: RED CONTACTO Y ANUNCIO -->
+<div class="grid grid-cols-2 gap-3 mb-3">
     <div>
         <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">Red Contacto</label>
-        <select id="redContacto" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all cursor-pointer">
+        <select id="redContacto" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none focus:border-cyan-500 transition-all cursor-pointer">
             <option value="" disabled selected>Seleccionar...</option>
             <option value="Instagram">Instagram</option>
             <option value="WhatsApp">WhatsApp</option>
@@ -200,10 +201,9 @@
         </select>
     </div>
 
-    <!-- Anuncio Proveniencia -->
     <div>
         <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">Anuncio Proveniencia</label>
-        <select id="anuncio" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all cursor-pointer">
+        <select id="anuncio" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none focus:border-cyan-500 transition-all cursor-pointer">
             <option value="" disabled selected>Seleccionar...</option>
             <option value="Reel">Reel</option>
             <option value="Post">Post</option>
@@ -213,21 +213,21 @@
     </div>
 </div>
 
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div>
-                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">Meta ID</label>
-                        <input type="text" id="metaId" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">UTM Content</label>
-                        <input type="text" id="utmContent" placeholder="Ej: promo1" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">UTM Campaign</label>
-                        <input type="text" id="utmCampaign" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
-                    </div>
-                </div>
+<!-- FILA 2: METRICAS Y UTMS -->
+<div class="grid grid-cols-3 gap-2 mb-4">
+    <div>
+        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Meta ID</label>
+        <input type="text" id="metaId" class="w-full p-2.5 border-2 border-slate-100 rounded-xl bg-slate-50/60 text-xs font-semibold text-[#051D2D] focus:outline-none focus:border-cyan-500 transition-all">
+    </div>
+    <div>
+        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">UTM Content</label>
+        <input type="text" id="utmContent" placeholder="Ej: promo1" class="w-full p-2.5 border-2 border-slate-100 rounded-xl bg-slate-50/60 text-xs font-semibold text-[#051D2D] focus:outline-none focus:border-cyan-500 transition-all">
+    </div>
+    <div>
+        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">UTM Campaign</label>
+        <input type="text" id="utmCampaign" class="w-full p-2.5 border-2 border-slate-100 rounded-xl bg-slate-50/60 text-xs font-semibold text-[#051D2D] focus:outline-none focus:border-cyan-500 transition-all">
+    </div>
+</div>
 
                 <div class="flex gap-3 pt-2">
                     <button type="submit" id="btnSubmit" class="flex-1 bg-brand-gradient hover:opacity-95 text-white font-black py-3 rounded-2xl transition-all shadow-lg shadow-[#00E6A5]/30 active:scale-[0.98]">
