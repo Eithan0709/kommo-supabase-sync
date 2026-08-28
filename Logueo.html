@@ -362,7 +362,7 @@
   <script>
     // Configuración de Supabase
     const SUPABASE_URL = 'https://jtfwxkdbwlfynuexnymr.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0Znd4a2Rid2xmeW51ZXhueW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNjI3NTEsImV4cCI6MjEwMjYzODc1MX0.A5BcfT1fKs0FVYkgY9dHhB6tl9JJEA2GJkImSgoxYNE';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0Znd4a2Rid2xmeW51ZXhueW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODtokNjI3NTEsImV4cCI6MjEwMjYzODc1MX0.A5BcfT1fKs0FVYkgY9dHhB6tl9JJEA2GJkImSgoxYNE';
     
     // Instancia global de Supabase
     let supabaseClient = null;
@@ -372,7 +372,39 @@
       console.error("No se pudo cargar el SDK de Supabase.");
     }
 
-    // ESCUCHADOR DE EVENTOS DE AUTENTICACIÓN (Para captura del enlace de recuperación)
+    // SOPORTE PARA FLUJO PKCE: Detectar parámetro 'code' en la URL al volver del correo
+    const urlParams = new URLSearchParams(window.location.search);
+    const authCode = urlParams.get('code');
+
+    if (authCode && supabaseClient) {
+        supabaseClient.auth.exchangeCodeForSession(authCode).then(async ({ data, error }) => {
+            if (!error) {
+                // Limpiar la URL para quitar el código por seguridad y estética
+                window.history.replaceState({}, document.title, window.location.pathname);
+                
+                // Lanzar el aviso para cambiar contraseña
+                const nuevaPassword = prompt("Ingresa tu nueva contraseña:");
+                if (nuevaPassword && nuevaPassword.trim() !== "") {
+                    const { error: updateError } = await supabaseClient.auth.updateUser({
+                        password: nuevaPassword.trim()
+                    });
+
+                    if (updateError) {
+                        alert("Error al actualizar la contraseña: " + updateError.message);
+                    } else {
+                        alert("¡Contraseña actualizada con éxito! Ya puedes ingresar con tu nueva clave.");
+                        window.location.href = window.location.pathname;
+                    }
+                } else {
+                    alert("No se ingresó ninguna contraseña.");
+                }
+            } else {
+                console.error("Error al procesar el código de recuperación:", error.message);
+            }
+        });
+    }
+
+    // ESCUCHADOR DE EVENTOS DE AUTENTICACIÓN (Respaldo para hashes antiguos)
     if (supabaseClient) {
       supabaseClient.auth.onAuthStateChange(async (event, session) => {
         if (event === 'PASSWORD_RECOVERY') {
@@ -506,35 +538,34 @@
       alert("Registro exitoso. Tu cuenta ha quedado pendiente de aprobación por el administrador.");
     }
 
-    // FUNCIÓN: ENVIAR CORREO DE RECUPERACIÓN (Soporta red local y dispositivos externos)
-async function procesarEnvioCodigo() {
-  const correoInput = document.getElementById('recCorreo');
-  const correo = correoInput ? correoInput.value.trim() : '';
+    // FUNCIÓN: ENVIAR CORREO DE RECUPERACIÓN
+    async function procesarEnvioCodigo() {
+      const correoInput = document.getElementById('recCorreo');
+      const correo = correoInput ? correoInput.value.trim() : '';
 
-  if (!correo) {
-    alert("Por favor ingresa un correo válido.");
-    return;
-  }
+      if (!correo) {
+        alert("Por favor ingresa un correo válido.");
+        return;
+      }
 
-  if (!supabaseClient) {
-    alert("Error de conexión con la base de datos.");
-    return;
-  }
+      if (!supabaseClient) {
+        alert("Error de conexión con la base de datos.");
+        return;
+      }
 
-  // Toma la URL exacta con la IP actual desde donde estás navegando
-  const redirectUrl = window.location.origin + window.location.pathname;
+      const redirectUrl = window.location.origin + window.location.pathname;
 
-  const { error } = await supabaseClient.auth.resetPasswordForEmail(correo, {
-    redirectTo: redirectUrl,
-  });
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(correo, {
+        redirectTo: redirectUrl,
+      });
 
-  if (error) {
-    alert("Error al enviar el correo de recuperación: " + error.message);
-  } else {
-    alert("Se ha enviado un enlace seguro a tu correo electrónico para restablecer la contraseña.");
-    mostrarRecuperacion(false);
-  }
-}
-  </script>
+      if (error) {
+        alert("Error al enviar el correo de recuperación: " + error.message);
+      } else {
+        alert("Se ha enviado un enlace seguro a tu correo electrónico para restablecer la contraseña.");
+        mostrarRecuperacion(false);
+      }
+    }
+</script>
 </body>
 </html>
