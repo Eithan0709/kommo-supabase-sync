@@ -300,31 +300,35 @@
     </div>
 
     <!-- LADO DERECHO: TARJETA -->
-    <div class="form-side">
-      <div class="card-wrapper">
-        
-        <!-- VISTA 1: INICIO DE SESIÓN -->
+   <div class="form-side" style="position: relative;">
+
+    <!-- LOGO ARRIBA DE LA TARJETA EN LA ZONA CLARA -->
+    <div style="position: absolute; top: 40px; left: 50%; transform: translateX(-50%); text-align: center; z-index: 10;">
+        <img src="Isaac-Jacob.png" alt="Escudo Isaac Jacob" style="height: 60px; width: auto; object-fit: contain;">
+    </div>
+
+    <div class="card-wrapper" style="margin-top: 50px;">
         <div class="card-face active-face" id="faceLogin">
-          <h2 class="card-title">Iniciar Sesión</h2>
-          <p class="card-sub">Ingresa tus credenciales para acceder</p>
+            <h2 class="card-title">Iniciar Sesión</h2>
+            <p class="card-sub">Ingresa tus credenciales para acceder</p>
 
-          <form id="loginForm">
-            <div class="form-group">
-              <label>Correo Electrónico</label>
-              <input type="email" id="loginCorreo" placeholder="nombre@ejemplo.com" required>
-            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="loginCorreo" placeholder="nombre@ejemplo.com" required>
+                </div>
 
-            <div class="form-group">
-              <label>Contraseña</label>
-              <input type="password" id="loginPass" placeholder="••••••••" required>
-            </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="loginPass" placeholder="••••••••" required>
+                </div>
 
-            <span class="forgot-btn" onclick="mostrarRecuperacion(true)">¿Olvidaste tu contraseña?</span>
-            <button type="submit" class="btn-action">Ingresar</button>
-            <button type="button" class="btn-action btn-back" onclick="registrarUsuario(event)">Registrarse</button>
-          </form>
+                <span class="forgot-btn" onclick="mostrarRecuperacion(true)">¿Olvidaste tu contraseña?</span>
+                <button type="submit" class="btn-action">Ingresar</button>
+                <button type="button" class="btn-action btn-back" onclick="registrarUsuario(event)">Registrarse</button>
+            </form>
         </div>
-
+    </div>
         <!-- VISTA 2: RECUPERACIÓN -->
         <div class="card-face hidden-face" id="faceRecuperacion">
           <h2 class="card-title">Recuperación</h2>
