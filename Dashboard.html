@@ -225,7 +225,8 @@
 
     <div>
         <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Estado del Lead</label>
-        <div class="bg-gradient-to-r from-slate-50 to-slate-100/80 p-2.5 rounded-2xl border-2 border-slate-100 flex items-center justify-between gap-1 text-[11px]">
+        <!-- flex-wrap añadido para evitar desbordes y justificación adaptable -->
+        <div class="bg-gradient-to-r from-slate-50 to-slate-100/80 p-2.5 rounded-2xl border-2 border-slate-100 flex flex-wrap items-center justify-between gap-2 text-[11px]">
             <label class="flex items-center gap-1 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition-colors whitespace-nowrap">
                 <input type="checkbox" id="checkCalificado" class="w-3.5 h-3.5 accent-[#00A88F] rounded cursor-pointer"> Calificado
             </label>
@@ -246,7 +247,8 @@
         <input type="datetime-local" id="fechaHora" step="1" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
     </div>
 
-    <div class="grid grid-cols-2 gap-3">
+    <!-- Usamos grid estricto con style inline si la clase CSS sigue teniendo conflictos -->
+    <div class="grid gap-3" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
         <div>
             <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Red Contacto</label>
             <select id="redContacto" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all cursor-pointer">
@@ -268,7 +270,7 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-3 gap-3">
+    <div class="grid gap-3" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
         <div>
             <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Meta ID</label>
             <input type="text" id="metaId" placeholder="" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
