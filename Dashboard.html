@@ -213,92 +213,85 @@
             </div>
 
             <form id="leadForm" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Teléfono *</label>
-                    <input type="text" id="telefono" required placeholder="+506 8888 8888" maxlength="15" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Nombre del Cliente *</label>
-                    <input type="text" id="nombre" required class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
-                </div>
-
-<div>
-    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Estado del Lead</label>
-    <div class="bg-gradient-to-r from-slate-50 to-slate-100/80 p-2.5 rounded-2xl border-2 border-slate-100 flex items-center justify-between gap-1 text-[11px]">
-        <label class="flex items-center gap-1 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition-colors whitespace-nowrap">
-            <input type="checkbox" id="checkCalificado" class="w-3.5 h-3.5 accent-[#00A88F] rounded cursor-pointer"> Calificado
-        </label>
-        <label class="flex items-center gap-1 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition-colors whitespace-nowrap">
-            <input type="checkbox" id="checkReunion" class="w-3.5 h-3.5 accent-[#00A88F] rounded cursor-pointer"> Reunión
-        </label>
-        <label class="flex items-center gap-1 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition-colors whitespace-nowrap">
-            <input type="checkbox" id="checkGanado" class="w-3.5 h-3.5 accent-[#00A88F] rounded cursor-pointer"> Ganado
-        </label>
-        <label class="flex items-center gap-1 cursor-pointer text-rose-600 font-medium whitespace-nowrap">
-            <input type="checkbox" id="noCalificado" class="w-3.5 h-3.5 accent-rose-500 rounded cursor-pointer"> No Calificado
-        </label>
+    <div>
+        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Teléfono *</label>
+        <input type="text" id="telefono" required placeholder="+506 8888 8888" maxlength="15" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
     </div>
-</div>
 
-<!-- CAMPO DE NOTAS GENERALES -->
-<div class="mt-2">
-    <label for="notaLead" class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">
-       
-    </label>
-    
+    <div>
+        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Nombre del Cliente *</label>
+        <input type="text" id="nombre" required class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+    </div>
 
-                <div>
-                    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Fecha y Hora de Contacto</label>
-                    <input type="datetime-local" id="fechaHora" step="1" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
-                </div>
+    <div>
+        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Estado del Lead</label>
+        <div class="bg-gradient-to-r from-slate-50 to-slate-100/80 p-2.5 rounded-2xl border-2 border-slate-100 flex items-center justify-between gap-1 text-[11px]">
+            <label class="flex items-center gap-1 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition-colors whitespace-nowrap">
+                <input type="checkbox" id="checkCalificado" class="w-3.5 h-3.5 accent-[#00A88F] rounded cursor-pointer"> Calificado
+            </label>
+            <label class="flex items-center gap-1 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition-colors whitespace-nowrap">
+                <input type="checkbox" id="checkReunion" class="w-3.5 h-3.5 accent-[#00A88F] rounded cursor-pointer"> Reunión
+            </label>
+            <label class="flex items-center gap-1 cursor-pointer text-[#051D2D] hover:text-[#00A88F] transition-colors whitespace-nowrap">
+                <input type="checkbox" id="checkGanado" class="w-3.5 h-3.5 accent-[#00A88F] rounded cursor-pointer"> Ganado
+            </label>
+            <label class="flex items-center gap-1 cursor-pointer text-rose-600 font-medium whitespace-nowrap">
+                <input type="checkbox" id="noCalificado" class="w-3.5 h-3.5 accent-rose-500 rounded cursor-pointer"> No Calificado
+            </label>
+        </div>
+    </div>
 
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Red Contacto</label>
-                        <select id="redContacto" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all cursor-pointer">
-                            <option value="" disabled selected>Seleccionar...</option>
-                            <option value="Instagram">Instagram</option>
-                            <option value="WhatsApp">WhatsApp</option>
-                            <option value="Facebook">Facebook</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Anuncio Proveniencia</label>
-                        <select id="anuncio" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all cursor-pointer">
-                            <option value="" disabled selected>Seleccionar...</option>
-                            <option value="Reel">Reel</option>
-                            <option value="Post">Post</option>
-                            <option value="Anuncio">Anuncio</option>
-                            <option value="Historias">Historias</option>
-                        </select>
-                    </div>
-                </div>
+    <div>
+        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Fecha y Hora de Contacto</label>
+        <input type="datetime-local" id="fechaHora" step="1" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+    </div>
 
-                <div class="grid grid-cols-3 gap-3">
-                    <div>
-                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Meta ID</label>
-                        <input type="text" id="metaId" placeholder="" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">UTM Content</label>
-                        <input type="text" id="utmContent" placeholder="Ej: promo1" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">UTM Campaign</label>
-                        <input type="text" id="utmCampaign" placeholder="" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
-                    </div>
-                </div>
+    <div class="grid grid-cols-2 gap-3">
+        <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Red Contacto</label>
+            <select id="redContacto" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all cursor-pointer">
+                <option value="" disabled selected>Seleccionar...</option>
+                <option value="Instagram">Instagram</option>
+                <option value="WhatsApp">WhatsApp</option>
+                <option value="Facebook">Facebook</option>
+            </select>
+        </div>
+        <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Anuncio Proveniencia</label>
+            <select id="anuncio" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all cursor-pointer">
+                <option value="" disabled selected>Seleccionar...</option>
+                <option value="Reel">Reel</option>
+                <option value="Post">Post</option>
+                <option value="Anuncio">Anuncio</option>
+                <option value="Historias">Historias</option>
+            </select>
+        </div>
+    </div>
 
-                <div class="flex gap-3 pt-3">
-                    <button type="submit" id="btnSubmit" class="flex-1 bg-brand-gradient hover:opacity-95 text-white font-black py-3 rounded-2xl transition-all shadow-lg shadow-[#00E6A5]/30 active:scale-[0.98]">
-                        Guardar Lead
-                    </button>
-                    <button type="button" id="btnLimpiar" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-4 py-3 rounded-2xl transition-all active:scale-[0.98]">
-                        Limpiar
-                    </button>
-                </div>
-            </form>
+    <div class="grid grid-cols-3 gap-3">
+        <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Meta ID</label>
+            <input type="text" id="metaId" placeholder="" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+        </div>
+        <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">UTM Content</label>
+            <input type="text" id="utmContent" placeholder="Ej: promo1" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+        </div>
+        <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">UTM Campaign</label>
+            <input type="text" id="utmCampaign" placeholder="" class="w-full p-3 border-2 border-slate-100 rounded-2xl bg-slate-50/60 text-sm font-semibold text-[#051D2D] focus:outline-none glow-input transition-all">
+        </div>
+    </div>
+
+    <div class="flex gap-3 pt-3">
+        <button type="submit" id="btnSubmit" class="flex-1 bg-brand-gradient hover:opacity-95 text-white font-black py-3 rounded-2xl transition-all shadow-lg shadow-[#00E6A5]/30 active:scale-[0.98]">
+            Guardar Lead
+        </button>
+        <button type="button" id="btnLimpiar" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-4 py-3 rounded-2xl transition-all active:scale-[0.98]">
+            Limpiar
+        </button>
+    </div>
+</form>
         </section>
 
         <section class="lg:col-span-8 space-y-6">
